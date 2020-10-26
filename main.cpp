@@ -11,33 +11,28 @@ Glib::RefPtr<Gtk::Builder> dialogBuilder;
 Gtk::Window *window;
 Gtk::ListBox *listBox;
 
-vector<string> blacklist = {"Proton", "Steam"};
-
 void buildList() {
     mainBuilder->get_widget("listBox", listBox);
-
     vector<string> pathList = SimpleFunctions::getDrives();
     // For each steam drive dir
-    for (size_t i = 0; i < pathList.size(); i++) {
-        char const *path = pathList[i].c_str();
+    for (string item : pathList) {
+        char const *path = item.c_str();
         DIR *folder = opendir(path);
         if (folder == NULL) {
             puts("Unable to read directory");
             exit(1);
         }
-        struct dirent *entry;
         // Each game appmanifest file
-        while ((entry = readdir(folder))) {
-            if (!strstr(entry->d_name, reinterpret_cast<char const *>("appmanifest_"))) continue;
-            GameItem::Game game = SimpleFunctions::getGame(SimpleFunctions::surroundChar(
-              const_cast<char *>(path), const_cast<char *>(reinterpret_cast<char const *>("/")),
-              entry->d_name));
-            if (SimpleFunctions::ifStrMatchList(game.name, blacklist)) continue;
+        while (dirent *entry = readdir(folder)) {
+            if (!strstr(entry->d_name, "appmanifest_")) continue;
+            GameItem::Game game =
+              SimpleFunctions::getGame(SimpleFunctions::surroundChar(path, "/", entry->d_name));
+            if (SimpleFunctions::ifStrMatchList(game.name, {"Proton", "Steam"})) continue;
             listBox->append(*new GameItem(
-              game, window,
+              game,
+              window,
               [](GdkEventButton *event, GameItem::Game game, Gtk::Window *window) -> bool {
-                  Dialog(dialogBuilder, game, window).show();
-                  return true;
+                  return Dialog(dialogBuilder, game, window).show();
               }));
         }
         closedir(folder);

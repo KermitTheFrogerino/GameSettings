@@ -23,8 +23,8 @@ class GameItem : public Gtk::ListBoxRow {
         label.set_label(game.name.c_str());
         eventBox.add(box);
         box.pack_start(label, Gtk::PACK_START, 5);
-        auto func = sigc::bind<GameItem::Game, Gtk::Window *>(sigc::ptr_fun(onClick), game, window);
-        eventBox.signal_button_press_event().connect(func);
+        eventBox.signal_button_press_event().connect(
+          sigc::bind<GameItem::Game, Gtk::Window *>(sigc::ptr_fun(onClick), game, window));
         add(eventBox);
     }
 };

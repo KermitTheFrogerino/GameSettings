@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef __TYTI_STEAM_VDF_PARSER_H__
-#define __TYTI_STEAM_VDF_PARSER_H__
+#ifndef VDFPARSER_VDFPARSER_H_
+#define VDFPARSER_VDFPARSER_H_
 
 #include <algorithm>
 #include <fstream>
@@ -75,28 +75,16 @@ namespace detail {
 
 template <typename T>
 struct literal_macro_help {
-    static CONSTEXPR const char *result(const char *c,
-                                        const wchar_t *) NOEXCEPT {
-        return c;
-    }
-    static CONSTEXPR const char result(const char c, const wchar_t) NOEXCEPT {
-        return c;
-    }
+    static CONSTEXPR const char *result(const char *c, const wchar_t *) NOEXCEPT { return c; }
+    static CONSTEXPR const char result(const char c, const wchar_t) NOEXCEPT { return c; }
 };
 
 template <>
 struct literal_macro_help<wchar_t> {
-    static CONSTEXPR const wchar_t *result(const char *,
-                                           const wchar_t *wc) NOEXCEPT {
-        return wc;
-    }
-    static CONSTEXPR const wchar_t result(const char,
-                                          const wchar_t wc) NOEXCEPT {
-        return wc;
-    }
+    static CONSTEXPR const wchar_t *result(const char *, const wchar_t *wc) NOEXCEPT { return wc; }
+    static CONSTEXPR const wchar_t result(const char, const wchar_t wc) NOEXCEPT { return wc; }
 };
-#define TYTI_L(type, text) \
-    vdf::detail::literal_macro_help<type>::result(text, L##text)
+#define TYTI_L(type, text) vdf::detail::literal_macro_help<type>::result(text, L##text)
 
 inline std::string string_converter(const std::string &w) NOEXCEPT { return w; }
 
@@ -109,12 +97,9 @@ struct deletable_facet : Facet {
     ~deletable_facet() {}
 };
 
-inline std::string string_converter(
-  const std::wstring &w)  // todo: use us-locale
+inline std::string string_converter(const std::wstring &w)  // todo: use us-locale
 {
-    std::wstring_convert<
-      deletable_facet<std::codecvt<wchar_t, char, std::mbstate_t>>>
-      conv1;
+    std::wstring_convert<deletable_facet<std::codecvt<wchar_t, char, std::mbstate_t>>> conv1;
     return conv1.to_bytes(w);
 }
 
@@ -131,9 +116,7 @@ class tabs {
     std::basic_string<charT> print() const {
         return std::basic_string<charT>(t, TYTI_L(charT, '\t'));
     }
-    inline CONSTEXPR tabs operator+(size_t i) const NOEXCEPT {
-        return tabs(t + i);
-    }
+    inline CONSTEXPR tabs operator+(size_t i) const NOEXCEPT { return tabs(t + i); }
 };
 
 template <typename oStreamT>
@@ -155,15 +138,11 @@ template <typename CharT>
 struct basic_object {
     typedef CharT char_type;
     std::basic_string<char_type> name;
-    std::unordered_map<std::basic_string<char_type>,
-                       std::basic_string<char_type>>
-      attribs;
-    std::unordered_map<std::basic_string<char_type>,
-                       std::shared_ptr<basic_object<char_type>>>
+    std::unordered_map<std::basic_string<char_type>, std::basic_string<char_type>> attribs;
+    std::unordered_map<std::basic_string<char_type>, std::shared_ptr<basic_object<char_type>>>
       childs;
 
-    void add_attribute(std::basic_string<char_type> key,
-                       std::basic_string<char_type> value) {
+    void add_attribute(std::basic_string<char_type> key, std::basic_string<char_type> value) {
         attribs.emplace(std::move(key), std::move(value));
     }
     void add_child(std::unique_ptr<basic_object<char_type>> child) {
@@ -177,15 +156,12 @@ template <typename CharT>
 struct basic_multikey_object {
     typedef CharT char_type;
     std::basic_string<char_type> name;
-    std::unordered_multimap<std::basic_string<char_type>,
-                            std::basic_string<char_type>>
-      attribs;
+    std::unordered_multimap<std::basic_string<char_type>, std::basic_string<char_type>> attribs;
     std::unordered_multimap<std::basic_string<char_type>,
                             std::shared_ptr<basic_multikey_object<char_type>>>
       childs;
 
-    void add_attribute(std::basic_string<char_type> key,
-                       std::basic_string<char_type> value) {
+    void add_attribute(std::basic_string<char_type> key, std::basic_string<char_type> value) {
         attribs.emplace(std::move(key), std::move(value));
     }
     void add_child(std::unique_ptr<basic_multikey_object<char_type>> child) {
@@ -229,8 +205,8 @@ void write(oStreamT &s,
     s << tab << TYTI_L(charT, '"') << r.name << TYTI_L(charT, "\"\n") << tab
       << TYTI_L(charT, "{\n");
     for (const auto &i : r.attribs)
-        s << tab + 1 << TYTI_L(charT, '"') << i.first
-          << TYTI_L(charT, "\"\t\t\"") << i.second << TYTI_L(charT, "\"\n");
+        s << tab + 1 << TYTI_L(charT, '"') << i.first << TYTI_L(charT, "\"\t\t\"") << i.second
+          << TYTI_L(charT, "\"\n");
     for (const auto &i : r.childs)
         if (i.second) write(s, *i.second, tab + 1);
     s << tab << TYTI_L(charT, "}\n");
@@ -266,8 +242,7 @@ template <typename OutputT, typename IterT>
 std::vector<std::unique_ptr<OutputT>> read_internal(
   IterT first,
   const IterT last,
-  std::unordered_set<
-    std::basic_string<typename std::iterator_traits<IterT>::value_type>>
+  std::unordered_set<std::basic_string<typename std::iterator_traits<IterT>::value_type>>
     &exclude_files,
   const Options &opt) {
     static_assert(std::is_default_constructible<OutputT>::value,
@@ -284,23 +259,22 @@ std::vector<std::unique_ptr<OutputT>> read_internal(
 #ifdef WIN32
     std::function<bool(const std::basic_string<charT> &)> is_platform_str =
       [](const std::basic_string<charT> &in) {
-          return in == TYTI_L(charT, "$WIN32") ||
-                 in == TYTI_L(charT, "$WINDOWS");
+          return in == TYTI_L(charT, "$WIN32") || in == TYTI_L(charT, "$WINDOWS");
       };
 #elif __APPLE__
     // WIN32 stands for pc in general
     std::function<bool(const std::basic_string<charT> &)> is_platform_str =
       [](const std::basic_string<charT> &in) {
-          return in == TYTI_L(charT, "$WIN32") ||
-                 in == TYTI_L(charT, "$POSIX") || in == TYTI_L(charT, "$OSX");
+          return in == TYTI_L(charT, "$WIN32") || in == TYTI_L(charT, "$POSIX") ||
+                 in == TYTI_L(charT, "$OSX");
       };
 
 #elif __linux__
     // WIN32 stands for pc in general
     std::function<bool(const std::basic_string<charT> &)> is_platform_str =
       [](const std::basic_string<charT> &in) {
-          return in == TYTI_L(charT, "$WIN32") ||
-                 in == TYTI_L(charT, "$POSIX") || in == TYTI_L(charT, "$LINUX");
+          return in == TYTI_L(charT, "$WIN32") || in == TYTI_L(charT, "$POSIX") ||
+                 in == TYTI_L(charT, "$LINUX");
       };
 #else
     std::function<bool(const std::basic_string<charT> &)> is_platform_str =
@@ -308,14 +282,11 @@ std::vector<std::unique_ptr<OutputT>> read_internal(
 #endif
 
     if (opt.ignore_all_platform_conditionals)
-        is_platform_str = [](const std::basic_string<charT> &) {
-            return false;
-        };
+        is_platform_str = [](const std::basic_string<charT> &) { return false; };
 
     // function for skipping a comment block
     // iter: iterator poition to the position after a '/'
-    auto skip_comments = [&comment_end_str](IterT iter,
-                                            const IterT &last) -> IterT {
+    auto skip_comments = [&comment_end_str](IterT iter, const IterT &last) -> IterT {
         ++iter;
         if (iter != last) {
             if (*iter == TYTI_L(charT, '/')) {
@@ -325,8 +296,8 @@ std::vector<std::unique_ptr<OutputT>> read_internal(
 
             if (*iter == '*') {
                 // block comment, skip until next occurance of "*\"
-                iter = std::search(iter + 1, last, std::begin(comment_end_str),
-                                   std::end(comment_end_str));
+                iter = std::search(
+                  iter + 1, last, std::begin(comment_end_str), std::end(comment_end_str));
                 iter += 2;
             }
         }
@@ -345,8 +316,7 @@ std::vector<std::unique_ptr<OutputT>> read_internal(
             while (last_esc != begin && *last_esc == '\\')
                 --last_esc;
         } while (!(std::distance(last_esc, iter) % 2));
-        if (iter == last)
-            throw std::runtime_error{"quote was opened but not closed."};
+        if (iter == last) throw std::runtime_error{"quote was opened but not closed."};
         return iter;
     };
 
@@ -355,8 +325,7 @@ std::vector<std::unique_ptr<OutputT>> read_internal(
         auto last_esc = iter;
         do {
             ++iter;
-            iter = std::find_first_of(iter, last, std::begin(whitespaces),
-                                      std::end(whitespaces));
+            iter = std::find_first_of(iter, last, std::begin(whitespaces), std::end(whitespaces));
             if (iter == last) break;
 
             last_esc = std::prev(iter);
@@ -368,29 +337,24 @@ std::vector<std::unique_ptr<OutputT>> read_internal(
         return iter;
     };
 
-    auto skip_whitespaces = [&whitespaces](IterT iter,
-                                           const IterT &last) -> IterT {
+    auto skip_whitespaces = [&whitespaces](IterT iter, const IterT &last) -> IterT {
         iter = std::find_if_not(iter, last, [&whitespaces](charT c) {
             // return true if whitespace
-            return std::any_of(std::begin(whitespaces), std::end(whitespaces),
-                               [c](charT pc) { return pc == c; });
+            return std::any_of(
+              std::begin(whitespaces), std::end(whitespaces), [c](charT pc) { return pc == c; });
         });
         return iter;
     };
 
     std::function<void(std::basic_string<charT> &)> strip_escape_symbols =
       [](std::basic_string<charT> &s) {
-          auto quote_searcher = [&s](size_t pos) {
-              return s.find(TYTI_L(charT, "\\\""), pos);
-          };
+          auto quote_searcher = [&s](size_t pos) { return s.find(TYTI_L(charT, "\\\""), pos); };
           auto p = quote_searcher(0);
           while (p != s.npos) {
               s.replace(p, 2, TYTI_L(charT, "\""));
               p = quote_searcher(p);
           }
-          auto searcher = [&s](size_t pos) {
-              return s.find(TYTI_L(charT, "\\\\"), pos);
-          };
+          auto searcher = [&s](size_t pos) { return s.find(TYTI_L(charT, "\\\\"), pos); };
           p = searcher(0);
           while (p != s.npos) {
               s.replace(p, 2, TYTI_L(charT, "\\"));
@@ -398,11 +362,10 @@ std::vector<std::unique_ptr<OutputT>> read_internal(
           }
       };
 
-    if (!opt.strip_escape_symbols)
-        strip_escape_symbols = [](std::basic_string<charT> &) {};
+    if (!opt.strip_escape_symbols) strip_escape_symbols = [](std::basic_string<charT> &) {};
 
-    auto conditional_fullfilled = [&skip_whitespaces, &is_platform_str](
-                                    IterT &iter, const IterT &last) {
+    auto conditional_fullfilled = [&skip_whitespaces, &is_platform_str](IterT &iter,
+                                                                        const IterT &last) {
         iter = skip_whitespaces(iter, last);
         if (*iter == '[') {
             ++iter;
@@ -434,9 +397,8 @@ std::vector<std::unique_ptr<OutputT>> read_internal(
             curIter = skip_comments(curIter, last);
         } else if (*curIter != TYTI_L(charT, '}')) {
             // get key
-            const auto keyEnd = (*curIter == TYTI_L(charT, '\"'))
-                                  ? end_quote(curIter, last)
-                                  : end_word(curIter, last);
+            const auto keyEnd = (*curIter == TYTI_L(charT, '\"')) ? end_quote(curIter, last)
+                                                                  : end_word(curIter, last);
             if (*curIter == TYTI_L(charT, '\"')) ++curIter;
             std::basic_string<charT> key(curIter, keyEnd);
             strip_escape_symbols(key);
@@ -457,32 +419,27 @@ std::vector<std::unique_ptr<OutputT>> read_internal(
             }
             // get value
             if (*curIter != '{') {
-                const auto valueEnd = (*curIter == TYTI_L(charT, '\"'))
-                                        ? end_quote(curIter, last)
-                                        : end_word(curIter, last);
+                const auto valueEnd = (*curIter == TYTI_L(charT, '\"')) ? end_quote(curIter, last)
+                                                                        : end_word(curIter, last);
                 if (*curIter == TYTI_L(charT, '\"')) ++curIter;
 
                 auto value = std::basic_string<charT>(curIter, valueEnd);
                 strip_escape_symbols(value);
-                curIter =
-                  valueEnd + ((*valueEnd == TYTI_L(charT, '\"')) ? 1 : 0);
+                curIter = valueEnd + ((*valueEnd == TYTI_L(charT, '\"')) ? 1 : 0);
 
                 auto conditional = conditional_fullfilled(curIter, last);
                 if (!conditional) continue;
 
                 // process value
-                if (key != TYTI_L(charT, "#include") &&
-                    key != TYTI_L(charT, "#base")) {
+                if (key != TYTI_L(charT, "#include") && key != TYTI_L(charT, "#base")) {
                     curObj->add_attribute(std::move(key), std::move(value));
                 } else {
-                    if (!opt.ignore_includes &&
-                        exclude_files.find(value) == exclude_files.end()) {
+                    if (!opt.ignore_includes && exclude_files.find(value) == exclude_files.end()) {
                         exclude_files.insert(value);
-                        std::basic_ifstream<charT> i(
-                          detail::string_converter(value));
+                        std::basic_ifstream<charT> i(detail::string_converter(value));
                         auto str = read_file(i);
-                        auto file_objs = read_internal<OutputT>(
-                          str.begin(), str.end(), exclude_files, opt);
+                        auto file_objs =
+                          read_internal<OutputT>(str.begin(), str.end(), exclude_files, opt);
                         for (auto &n : file_objs) {
                             if (curObj)
                                 curObj->add_child(std::move(n));
@@ -532,10 +489,9 @@ can thow:
 */
 template <typename OutputT, typename IterT>
 OutputT read(IterT first, const IterT last, const Options &opt = Options{}) {
-    auto exclude_files = std::unordered_set<
-      std::basic_string<typename std::iterator_traits<IterT>::value_type>>{};
-    auto roots =
-      detail::read_internal<OutputT>(first, last, exclude_files, opt);
+    auto exclude_files =
+      std::unordered_set<std::basic_string<typename std::iterator_traits<IterT>::value_type>>{};
+    auto roots = detail::read_internal<OutputT>(first, last, exclude_files, opt);
 
     OutputT result;
     if (roots.size() > 1) {
@@ -559,10 +515,7 @@ std::errc::not_enough_memory: not enough space
 std::errc::invalid_argument: iterators throws e.g. out of range
 */
 template <typename OutputT, typename IterT>
-OutputT read(IterT first,
-             IterT last,
-             std::error_code &ec,
-             const Options &opt = Options{}) NOEXCEPT
+OutputT read(IterT first, IterT last, std::error_code &ec, const Options &opt = Options{}) NOEXCEPT
 
 {
     ec.clear();
@@ -586,10 +539,7 @@ If the file is mailformatted, parser will try to read it until it can.
 @param ok output bool. true, if parser successed, false, if parser failed
 */
 template <typename OutputT, typename IterT>
-OutputT read(IterT first,
-             const IterT last,
-             bool *ok,
-             const Options &opt = Options{}) NOEXCEPT {
+OutputT read(IterT first, const IterT last, bool *ok, const Options &opt = Options{}) NOEXCEPT {
     std::error_code ec;
     auto r = read<OutputT>(first, last, ec, opt);
     if (ok) *ok = !ec;
@@ -597,10 +547,7 @@ OutputT read(IterT first,
 }
 
 template <typename IterT>
-inline auto read(IterT first,
-                 const IterT last,
-                 bool *ok,
-                 const Options &opt = Options{}) NOEXCEPT
+inline auto read(IterT first, const IterT last, bool *ok, const Options &opt = Options{}) NOEXCEPT
   -> basic_object<typename std::iterator_traits<IterT>::value_type> {
     return read<basic_object<typename std::iterator_traits<IterT>::value_type>>(
       first, last, ok, opt);
@@ -619,17 +566,14 @@ inline auto read(IterT first,
 template <typename IterT>
 inline auto read(IterT first, const IterT last, const Options &opt = Options{})
   -> basic_object<typename std::iterator_traits<IterT>::value_type> {
-    return read<basic_object<typename std::iterator_traits<IterT>::value_type>>(
-      first, last, opt);
+    return read<basic_object<typename std::iterator_traits<IterT>::value_type>>(first, last, opt);
 }
 
 /** \brief Loads a stream (e.g. filestream) into the memory and parses the vdf
    formatted data. throws "std::bad_alloc" if file buffer could not be allocated
 */
 template <typename OutputT, typename iStreamT>
-OutputT read(iStreamT &inStream,
-             std::error_code &ec,
-             const Options &opt = Options{}) {
+OutputT read(iStreamT &inStream, std::error_code &ec, const Options &opt = Options{}) {
     // cache the file
     typedef typename iStreamT::char_type charT;
     std::basic_string<charT> str = detail::read_file(inStream);
@@ -639,8 +583,9 @@ OutputT read(iStreamT &inStream,
 }
 
 template <typename iStreamT>
-inline basic_object<typename iStreamT::char_type>
-read(iStreamT &inStream, std::error_code &ec, const Options &opt = Options{}) {
+inline basic_object<typename iStreamT::char_type> read(iStreamT &inStream,
+                                                       std::error_code &ec,
+                                                       const Options &opt = Options{}) {
     return read<basic_object<typename iStreamT::char_type>>(inStream, ec, opt);
 }
 
@@ -657,8 +602,9 @@ OutputT read(iStreamT &inStream, bool *ok, const Options &opt = Options{}) {
 }
 
 template <typename iStreamT>
-inline basic_object<typename iStreamT::char_type>
-read(iStreamT &inStream, bool *ok, const Options &opt = Options{}) {
+inline basic_object<typename iStreamT::char_type> read(iStreamT &inStream,
+                                                       bool *ok,
+                                                       const Options &opt = Options{}) {
     return read<basic_object<typename iStreamT::char_type>>(inStream, ok, opt);
 }
 
@@ -676,9 +622,8 @@ OutputT read(iStreamT &inStream, const Options &opt) {
 }
 
 template <typename iStreamT>
-inline basic_object<typename iStreamT::char_type> read(
-  iStreamT &inStream,
-  const Options &opt = Options{}) {
+inline basic_object<typename iStreamT::char_type> read(iStreamT &inStream,
+                                                       const Options &opt = Options{}) {
     return read<basic_object<typename iStreamT::char_type>>(inStream, opt);
 }
 
@@ -698,4 +643,4 @@ inline basic_object<typename iStreamT::char_type> read(
 #undef TYTI_UNDEF_NOTHROW
 #endif
 
-#endif  //__TYTI_STEAM_VDF_PARSER_H__
+#endif  // VDFPARSER_VDFPARSER_H_

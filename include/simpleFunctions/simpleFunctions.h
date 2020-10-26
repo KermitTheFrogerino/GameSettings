@@ -12,27 +12,21 @@ using namespace std;
 #ifndef SIMPLEFUNCTIONS_SIMPLEFUNCTIONS_H_
 #define SIMPLEFUNCTIONS_SIMPLEFUNCTIONS_H_
 
+// Adds \" to each side of the string
 #define quote(x) #x
-#define CHUNK_SIZE 2048
 
 class SimpleFunctions {
  public:
-    static char *intToChar(int value) { return g_strdup_printf("%i", value); }
-
-    static char *stringToChar(string str) {
-        return const_cast<char *>(reinterpret_cast<char const *>(*str.c_str()));
-    }
-
-    static int charInList(int value, int *list) {
-        for (int i = 0; i < sizeof(*list) / sizeof(int); i++) {
-            if (value == list[i]) {
-                return 1;
+    static bool stringInList(string value, vector<string> list) {
+        for (auto item : list) {
+            if (value == item) {
+                return true;
             }
         }
-        return 0;
+        return false;
     }
 
-    static char *addChar(char *first, char *second) {
+    static char *addChar(char const *first, char const *second) {
         size_t size = sizeof(char) + strlen(first) + strlen(second);
         char *str = reinterpret_cast<char *>(malloc(size));
         strcpy(str, first);
@@ -40,7 +34,7 @@ class SimpleFunctions {
         return str;
     }
 
-    static char *surroundChar(char *first, char *second, char *third) {
+    static char *surroundChar(char const *first, char const *second, char const *third) {
         size_t size = sizeof(char) + strlen(first) + strlen(second) + strlen(third);
         char *str = reinterpret_cast<char *>(malloc(size));
         strcpy(str, first);
@@ -69,8 +63,8 @@ class SimpleFunctions {
     }
 
     static bool ifStrMatchList(string ref, vector<string> li) {
-        for (size_t i = 0; i < li.size(); i++) {
-            if (strstr(ref.c_str(), li[i].c_str())) {
+        for (auto it : li) {
+            if (strstr(ref.c_str(), it.c_str())) {
                 return true;
             }
         }
@@ -83,7 +77,7 @@ class SimpleFunctions {
         auto root = tyti::vdf::read(file);
         vector<string> pathList = {steamLib};
         for (int i = 1; i < root.attribs.size(); i++) {
-            string item = root.attribs[intToChar(i)];
+            string item = root.attribs[to_string(i)];
             if (item.size() > 0) {
                 pathList.push_back(item + "/steamapps");
                 continue;
