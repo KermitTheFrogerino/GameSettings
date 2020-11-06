@@ -17,6 +17,23 @@ using namespace std;
 
 class SimpleFunctions {
  public:
+    static vector<string> stringSplit(string split) {
+        vector<string> splitVector;
+        string segment;
+        std::istringstream streamString(split);
+        while (std::getline(streamString, segment, '/')) {
+            splitVector.push_back(segment);
+        }
+        return splitVector;
+    }
+    static const string *charListToString(char const *list) {
+        // https://stackoverflow.com/a/4643721/9376723
+        string *str;
+        str = new string;
+        *str = list;
+        return str;
+    }
+
     static bool stringInList(string value, vector<string> list) {
         for (auto item : list) {
             if (value == item) {

@@ -1,5 +1,7 @@
 #include <gtkmm-3.0/gtkmm.h>
 #include <iostream>
+#include <sstream>
+#include <string>
 #include "include/dialog/dialog.h"
 #include "include/gameItem/gameItem.h"
 #include "include/jsonParser/jsonParser.h"
@@ -10,6 +12,13 @@ Glib::RefPtr<Gtk::Builder> mainBuilder;
 Glib::RefPtr<Gtk::Builder> dialogBuilder;
 Gtk::Window *window;
 Gtk::ListBox *listBox;
+
+void parseJSON() {
+    auto parser = MyJsonParser(
+      SimpleFunctions::charListToString("testJSON.json"),
+      (string)("second/child/final"));
+    parser.parse();
+}
 
 void buildList() {
     mainBuilder->get_widget("listBox", listBox);
@@ -29,8 +38,7 @@ void buildList() {
               SimpleFunctions::getGame(SimpleFunctions::surroundChar(path, "/", entry->d_name));
             if (SimpleFunctions::ifStrMatchList(game.name, {"Proton", "Steam"})) continue;
             listBox->append(*new GameItem(
-              game,
-              window,
+              game, window,
               [](GdkEventButton *event, GameItem::Game game, Gtk::Window *window) -> bool {
                   return Dialog(dialogBuilder, game, window).show();
               }));
@@ -46,7 +54,10 @@ int main(int argc, char **argv) {
     dialogBuilder = Gtk::Builder::create_from_file("glade/dialog.glade");
 
     mainBuilder->get_widget("window", window);
-    buildList();
-    window->show_all();
-    return app->run(*window);
+
+    parseJSON();
+    // buildList();
+    // window->show_all();
+    // return app->run(*window);
+    return 0;
 }

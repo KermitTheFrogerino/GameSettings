@@ -1,4 +1,8 @@
+#include <any>
 #include <iostream>
+#include <map>
+#include <sstream>
+#include <string>
 #include <vector>
 #include "../simpleFunctions/simpleFunctions.h"
 
@@ -7,43 +11,35 @@
 
 using namespace std;
 
+/*
+ * @param `dir` is the path to the .json file
+ * @param `path[]` is the json path which is divided by every /
+ */
 class MyJsonParser {
  private:
-    char const *dir;
-    vector<char *> pathSplit;
+    const string *dir;
+    vector<string> pathSplit;
 
  public:
-    MyJsonParser(char const *dir, char path[]) {
+    MyJsonParser(const string *dir, string path) {
         this->dir = dir;
         char *item;
         int index = 0;
-        while ((item = strtok_r(path, "/", &path))) {
-            pathSplit.push_back(item);
-            index++;
+        pathSplit = SimpleFunctions::stringSplit(path);
+        for (auto item : pathSplit) {
+            cout << item << endl;
         }
-        for (size_t i = 0; i < pathSplit.size(); i++) {
-            cout << " " << pathSplit[i];
-        }
-        // list<char *>::iterator it;
-        // for (it = pathSplit.begin(); it != pathSplit.end(); ++it) {
-        //     cout << " " << *it;
-        // }
-        // cout << pathSplit.size();
-        printf("\n\n");
+        cout << endl;
     }
 
+    ~MyJsonParser() { delete dir; }
+
     void parse() {
-        FILE *fp;
-        if ((fp = fopen(dir, "r")) == NULL) {
+        FILE *fp = fopen(dir->c_str(), "r");
+        if (fp == NULL) {
             printf("Error! opening file");
             exit(1);
         }
-        // Gets the size of the file
-        int64_t size;
-        fseek(fp, 0, SEEK_END);
-        size = ftell(fp);
-        fseek(fp, 0, SEEK_SET);
-        char *c = reinterpret_cast<char *>(malloc(sizeof(char) * size));
 
         char *line = NULL;
         size_t len = 0;
@@ -53,48 +49,42 @@ class MyJsonParser {
         int index = 2;
         int keyPos = 0;
 
+        std::map<std::string, std::any> output;
+
+        vector<string> location = {};
+
         while ((read = getline(&line, &len, fp)) != -1) {
+            if (line == NULL) continue;
             bool setLastOpenBracket = false;
             int length = strlen(SimpleFunctions::removeSpaces(line));
-            // if (length < 0) length = 0;
-            // cout << line << "\n";
-            // cout << line[length] << "yeet" << length;
-            // cout << "\n\n";
             char *character = &line[0];
+            cout << character;
 
             if (strstr(character, "{")) {
                 openBracketPos++;
-                lastLineOpenBracket = true;
-                // cout << openBracketPos << line;
+                setLastOpenBracket = true;
+                string *item = new string
+                item = *character;
+                location.insert(item);
+                cout << item << endl;
             }
 
-            // cout << openBracketPos << SimpleFunctions::removeSpaces(line);
-            cout << openBracketPos << "  " << character << "  " << line;
-            // cout << index;
-            // if (openBracketPos == index) {
-            //     // cout << pathSplit[index - 2] << line;
-            //     if (strstr(line, SimpleFunctions::surroundChar(
-            //                        "\"", pathSplit[index - 2], "\":"))) {
-            //         // cout << line;
-            //         index++;
-            //     }
-            // }
+            // cout << openBracketPos << endl;
 
-            // if (openBracketPos == pathSplit.size()) {
-            //     cout << openBracketPos << line;
-            //     // if (strstr(line, pathSplit[openBracketPos - 1])) {
-            //     //     cout << "pathSplit[openBracketPos - 1]";
-            //     // }
-            // }
-
-            if (strstr(character, "}") || strstr(character, "},")) {
-                // cout << openBracketPos << line;
+            if (strstr(character, "}") || strstr(character, "}")) {
                 openBracketPos--;
             }
 
             lastLineOpenBracket = setLastOpenBracket;
+            cout << endl;
         }
-        printf("\n");
+        // cout << "\n" << endl;
+
+        // for (auto item : location) {
+        //     cout << item << endl;
+        // }
+
+        cout << endl;
         fclose(fp);
     }
 };
