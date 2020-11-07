@@ -17,11 +17,11 @@ using namespace std;
 
 class SimpleFunctions {
  public:
-    static vector<string> stringSplit(string split) {
+    static vector<string> stringSplit(string split, char splitter) {
         vector<string> splitVector;
         string segment;
         std::istringstream streamString(split);
-        while (std::getline(streamString, segment, '/')) {
+        while (std::getline(streamString, segment, splitter)) {
             splitVector.push_back(segment);
         }
         return splitVector;
@@ -111,6 +111,21 @@ class SimpleFunctions {
         game.appID = root.attribs["appid"];
         game.name = root.attribs["name"];
         return game;
+    }
+
+    static string readGameOptions(string gameID) {
+        const char *optionsPath =
+          "/home/erikreider/.steam/steam/userdata/143352235/config/localconfig.vdf";
+        const char *testPath = "test.vdf";
+
+        ifstream file(optionsPath);
+        return tyti::vdf::read(file)
+          .childs["Software"]
+          ->childs["Valve"]
+          ->childs["Steam"]
+          ->childs["Apps"]
+          ->childs[gameID]
+          ->attribs["LaunchOptions"];
     }
 };
 #endif  // SIMPLEFUNCTIONS_SIMPLEFUNCTIONS_H_

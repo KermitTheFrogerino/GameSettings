@@ -1,9 +1,14 @@
 #include <gtkmm.h>
 #include <iostream>
 #include <string>
+#include <utility>
+#include <vector>
+#include "../dialogItem/dialogItemType.h"
 
 #ifndef GAMEITEM_GAMEITEM_H_
 #define GAMEITEM_GAMEITEM_H_
+
+using namespace std;
 
 class GameItem : public Gtk::ListBoxRow {
  private:
@@ -14,9 +19,31 @@ class GameItem : public Gtk::ListBoxRow {
 
  public:
     typedef struct {
-        std::string appID;
-        std::string name;
+        string appID;
+        string name;
     } Game;
+
+    struct GameSetting {
+     private:
+        string name;
+        vector<pair<string, string>> settings;
+        ItemType itemType;
+
+     public:
+        GameSetting(string name,
+                    vector<pair<string, string>> settings,
+                    ItemType itemType = ItemType::two) {
+            this->name = name;
+            this->settings = settings;
+            this->itemType = itemType;
+        }
+
+        string getName() { return name; }
+
+        std::vector<std::pair<std::string, std::string>> getSettings() { return settings; }
+
+        ItemType getType() { return itemType; }
+    };
 
     GameItem(Game game, Gtk::Window *window, bool(onClick)(GdkEventButton *, Game, Gtk::Window *)) {
         Gtk::manage(this);

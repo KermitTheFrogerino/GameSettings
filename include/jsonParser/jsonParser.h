@@ -25,7 +25,7 @@ class MyJsonParser {
         this->dir = dir;
         char *item;
         int index = 0;
-        pathSplit = SimpleFunctions::stringSplit(path);
+        pathSplit = SimpleFunctions::stringSplit(path, '/');
         for (auto item : pathSplit) {
             cout << item << endl;
         }
@@ -58,18 +58,12 @@ class MyJsonParser {
             bool setLastOpenBracket = false;
             int length = strlen(SimpleFunctions::removeSpaces(line));
             char *character = &line[0];
-            cout << character;
+            cout << SimpleFunctions::removeSpaces(line);
 
             if (strstr(character, "{")) {
                 openBracketPos++;
                 setLastOpenBracket = true;
-                string *item = new string
-                item = *character;
-                location.insert(item);
-                cout << item << endl;
             }
-
-            // cout << openBracketPos << endl;
 
             if (strstr(character, "}") || strstr(character, "}")) {
                 openBracketPos--;

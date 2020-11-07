@@ -13,13 +13,6 @@ Glib::RefPtr<Gtk::Builder> dialogBuilder;
 Gtk::Window *window;
 Gtk::ListBox *listBox;
 
-void parseJSON() {
-    auto parser = MyJsonParser(
-      SimpleFunctions::charListToString("testJSON.json"),
-      (string)("second/child/final"));
-    parser.parse();
-}
-
 void buildList() {
     mainBuilder->get_widget("listBox", listBox);
     vector<string> pathList = SimpleFunctions::getDrives();
@@ -38,7 +31,8 @@ void buildList() {
               SimpleFunctions::getGame(SimpleFunctions::surroundChar(path, "/", entry->d_name));
             if (SimpleFunctions::ifStrMatchList(game.name, {"Proton", "Steam"})) continue;
             listBox->append(*new GameItem(
-              game, window,
+              game,
+              window,
               [](GdkEventButton *event, GameItem::Game game, Gtk::Window *window) -> bool {
                   return Dialog(dialogBuilder, game, window).show();
               }));
@@ -55,9 +49,7 @@ int main(int argc, char **argv) {
 
     mainBuilder->get_widget("window", window);
 
-    parseJSON();
-    // buildList();
-    // window->show_all();
-    // return app->run(*window);
-    return 0;
+    buildList();
+    window->show_all();
+    return app->run(*window);
 }
