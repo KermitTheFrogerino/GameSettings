@@ -23,27 +23,11 @@ class GameItem : public Gtk::ListBoxRow {
         string name;
     } Game;
 
-    struct GameSetting {
-     private:
+    typedef struct {
         string name;
         vector<pair<string, string>> settings;
         ItemType itemType;
-
-     public:
-        GameSetting(string name,
-                    vector<pair<string, string>> settings,
-                    ItemType itemType = ItemType::two) {
-            this->name = name;
-            this->settings = settings;
-            this->itemType = itemType;
-        }
-
-        string getName() { return name; }
-
-        std::vector<std::pair<std::string, std::string>> getSettings() { return settings; }
-
-        ItemType getType() { return itemType; }
-    };
+    } GameSetting;
 
     GameItem(Game game, Gtk::Window *window, bool(onClick)(GdkEventButton *, Game, Gtk::Window *)) {
         Gtk::manage(this);

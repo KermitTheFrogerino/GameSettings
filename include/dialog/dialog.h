@@ -10,6 +10,7 @@
 #include "../dialogItem/dialogItem.h"
 #include "../dialogItem/dialogItemType.h"
 #include "../gameItem/gameItem.h"
+#include "../globalVariables.h"
 #include "../simpleFunctions/simpleFunctions.h"
 
 using namespace std;
@@ -24,31 +25,8 @@ class Dialog {
     Gtk::Window *window;
     GameItem::Game game;
     Gtk::ListBox *listBox;
-    Gtk::HeaderBar headerBar = Gtk::HeaderBar();
-
-    vector<GameItem::GameSetting> itemsList = {
-      {GameItem::GameSetting("Esync", {{"Esync", "PROTON_NO_ESYNC=1"}})},
-      {GameItem::GameSetting("MangoHud", {{"MangoHud", "mangohud"}})},
-      {GameItem::GameSetting("Gamemode", {{"Gamemode", "gamemoderun"}})},
-      {GameItem::GameSetting(
-        "AMD Driver",
-        {{
-           "Mesa",
-           "export "
-           "VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/radeon_icd.i686.json:/usr/share/"
-           "vulkan/icd.d/radeon_icd.x86_64.json",
-         },
-         {
-           "AMDVLK",
-           "export "
-           "VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/amd_icd32.json:/usr/share/vulkan/"
-           "icd.d/amd_icd64.json",
-         }},
-        ItemType::multiple)},
-      {GameItem::GameSetting("Fsync", {{"Fsync", "PROTON_NO_FSYNC=1"}})},
-      {GameItem::GameSetting("WineDebug", {{"WineDebug", "winedebug=-all"}})},
-      {GameItem::GameSetting("Log", {{"Log", "PROTON_LOG=1"}})},
-    };
+    Gtk::HeaderBar headerBar;
+    vector<DialogItem *> listRows = {};
 
     void build() {
         dialog->set_titlebar(headerBar);
@@ -61,22 +39,29 @@ class Dialog {
 
     void checkOptions(string launchOptions) {
         cout << launchOptions << endl;
-        for (GameItem::GameSetting setting : itemsList) {
+        for (GameItem::GameSetting setting : GlobalVariables.itemsList) {
             DialogItem *dialogItem = NULL;
             for (string item : SimpleFunctions::stringSplit(launchOptions, ' ')) {
-                if (strcmp(item.c_str(), setting.getSettings()[0].second.c_str()) == 0) {
+                if (strcmp(item.c_str(), setting.settings[0].second.c_str()) == 0) {
                     cout << item << endl;
                     dialogItem = new DialogItem(setting, true);
                 }
             }
             if (dialogItem == NULL) dialogItem = new DialogItem(setting);
+            listRows.push_back(dialogItem);
             listBox->append(*dialogItem);
         }
 
         listBox->show_all_children();
     }
 
-    void save() { cout << "Save" << endl; }
+    void save() {
+        cout << "Save" << endl;
+        for (auto item : listRows) {
+            bool state = item->getSwitchState();
+            cout << state << endl;
+        }
+    }
 
  public:
     Dialog(Glib::RefPtr<Gtk::Builder> dialogBuilder, GameItem::Game game, Gtk::Window *parent) {
@@ -90,7 +75,11 @@ class Dialog {
         try {
             build();
             dialog->set_transient_for(*window);
-            if (dialog->run() == Gtk::RESPONSE_APPLY) save();
+            if (dialog->run() == Gtk::RESPONSE_APPLY) {
+                save();
+            } else {
+                cout << endl << "close" << endl;
+            }
             for (Gtk::Widget *item : listBox->get_children()) {
                 listBox->remove(*item);
             }

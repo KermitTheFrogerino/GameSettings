@@ -15,17 +15,19 @@ class DialogItem : public Gtk::ListBoxRow {
     Gtk::EventBox eventBox;
     Gtk::Label label;
     Gtk::Switch switchWidget;
+    GameItem::GameSetting gameSettings;
 
     int const margin = 8;
 
  public:
     // Switch Item
-    explicit DialogItem(GameItem::GameSetting gameSetting, bool enabled = false) {
+    explicit DialogItem(GameItem::GameSetting gameSettings, bool enabled = false) {
+        this->gameSettings = gameSettings;
         Gtk::manage(this);
 
         switchWidget.set_state(enabled);
 
-        label.set_label(gameSetting.getName());
+        label.set_label(gameSettings.name);
         label.set_hexpand(true);
         label.set_halign(Gtk::ALIGN_START);
         eventBox.add(box);
@@ -37,5 +39,7 @@ class DialogItem : public Gtk::ListBoxRow {
         box.add(switchWidget);
         add(eventBox);
     }
+
+    bool getSwitchState() { return switchWidget.get_state(); }
 };
 #endif  // DIALOGITEM_DIALOGITEM_H_
