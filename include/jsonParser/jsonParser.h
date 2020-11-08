@@ -25,7 +25,7 @@ class MyJsonParser {
         this->dir = dir;
         char *item;
         int index = 0;
-        pathSplit = SimpleFunctions::stringSplit(path, '/');
+        pathSplit = SimpleFunctions::stringSplitByChar(path, '/');
         for (auto item : pathSplit) {
             cout << item << endl;
         }

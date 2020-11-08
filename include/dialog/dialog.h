@@ -1,4 +1,5 @@
 #include <gtkmm.h>
+#include <algorithm>
 #include <any>
 #include <iostream>
 #include <iterator>
@@ -7,6 +8,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include "../dialogItem/dialogInputItem.h"
 #include "../dialogItem/dialogItem.h"
 #include "../dialogItem/dialogItemType.h"
 #include "../gameItem/gameItem.h"
@@ -27,6 +29,8 @@ class Dialog {
     Gtk::ListBox *listBox;
     Gtk::HeaderBar headerBar;
     vector<DialogItem *> listRows = {};
+    DialogInputItem *prefixDialogInput = new DialogInputItem("Prefix Commands");
+    DialogInputItem *suffixDialogInput = new DialogInputItem("Suffix Commands");
 
     void build() {
         dialog->set_titlebar(headerBar);
@@ -38,21 +42,41 @@ class Dialog {
     }
 
     void checkOptions(string launchOptions) {
-        cout << launchOptions << endl;
+        auto split = SimpleFunctions::stringSplitByString(launchOptions, "%command%");
+        vector<string> prefix =
+          SimpleFunctions::stringSplitByChar(split.size() >= 2 ? split[0] : "", ' ');
+
+        vector<string> validSettings;
         for (GameItem::GameSetting setting : GlobalVariables.itemsList) {
             DialogItem *dialogItem = NULL;
-            for (string item : SimpleFunctions::stringSplit(launchOptions, ' ')) {
-                if (strcmp(item.c_str(), setting.settings[0].second.c_str()) == 0) {
-                    cout << item << endl;
-                    dialogItem = new DialogItem(setting, true);
-                }
+            if (find(prefix.begin(), prefix.end(), setting.settings[0].second) != prefix.end()) {
+                validSettings.push_back(setting.settings[0].second);
+                dialogItem = new DialogItem(setting, true);
             }
             if (dialogItem == NULL) dialogItem = new DialogItem(setting);
             listRows.push_back(dialogItem);
             listBox->append(*dialogItem);
         }
-
+        setPrefix(prefix, validSettings);
+        setSuffix(split.size() >= 2 ? split[1] : "");
         listBox->show_all_children();
+    }
+
+    void setPrefix(vector<string> prefix, vector<string> validSettings) {
+        string prefixOtherCommands = "";
+        for (auto command : prefix) {
+            if (find(validSettings.begin(), validSettings.end(), command) == validSettings.end()) {
+                prefixOtherCommands += " " + command;
+            }
+        }
+        prefixDialogInput->setEntryText(
+          SimpleFunctions::removeAllBeginingSpaces(prefixOtherCommands));
+        listBox->append(*prefixDialogInput);
+    }
+
+    void setSuffix(string suffix) {
+        suffixDialogInput->setEntryText(SimpleFunctions::removeAllBeginingSpaces(suffix));
+        listBox->append(*suffixDialogInput);
     }
 
     void save() {

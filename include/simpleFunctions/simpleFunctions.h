@@ -17,7 +17,35 @@ using namespace std;
 
 class SimpleFunctions {
  public:
-    static vector<string> stringSplit(string split, char splitter) {
+    static string removeAllBeginingSpaces(string str) {
+        while (true) {
+            if (str.starts_with(' ')) {
+                str = str.erase(0, 1);
+                continue;
+            }
+            break;
+        }
+        return str;
+    }
+
+    static vector<string> stringSplitByString(string str, string token) {
+        vector<string> result;
+        if (str.size() <= 0) return result;
+        while (str.size()) {
+            int index = str.find(token);
+            if (index != string::npos) {
+                result.push_back(str.substr(0, index));
+                str = str.substr(index + token.size());
+                if (str.size() == 0) result.push_back(str);
+            } else {
+                result.push_back(str);
+                str = "";
+            }
+        }
+        return result;
+    }
+
+    static vector<string> stringSplitByChar(string split, char splitter) {
         vector<string> splitVector;
         string segment;
         std::istringstream streamString(split);
