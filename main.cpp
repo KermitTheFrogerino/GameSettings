@@ -6,6 +6,7 @@
 #include "include/gameItem/gameItem.h"
 #include "include/jsonParser/jsonParser.h"
 #include "include/simpleFunctions/simpleFunctions.h"
+#include "include/vdfParser/vdfParser2.h"
 
 Glib::RefPtr<Gtk::Application> app;
 Glib::RefPtr<Gtk::Builder> mainBuilder;
@@ -29,7 +30,7 @@ void buildList() {
             if (!strstr(entry->d_name, "appmanifest_")) continue;
             GameItem::Game game =
               SimpleFunctions::getGame(SimpleFunctions::surroundChar(path, "/", entry->d_name));
-            if (SimpleFunctions::ifStrMatchList(game.name, {"Proton", "Steam"})) continue;
+            if (SimpleFunctions::stringInList(game.name, {"Proton", "Steam"})) continue;
             listBox->append(*new GameItem(
               game,
               window,
@@ -49,7 +50,14 @@ int main(int argc, char **argv) {
 
     mainBuilder->get_widget("window", window);
 
-    buildList();
-    window->show_all();
-    return app->run(*window);
+    string path = "UserLocalConfigStore/Software/Valve/Steam/Apps/70/LaunchOptions";
+    VdfParser2 parser = VdfParser2("test.vdf");
+    auto str = parser.readFile(path);
+    cout << str << endl;
+    parser.write(path, "yeet %command%");
+
+    // buildList();
+    // window->show_all();
+    // return app->run(*window);
+    return 0;
 }

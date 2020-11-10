@@ -70,12 +70,12 @@ class Dialog {
             }
         }
         prefixDialogInput->setEntryText(
-          SimpleFunctions::removeAllBeginingSpaces(prefixOtherCommands));
+          SimpleFunctions::removeCharRFromStart(prefixOtherCommands, ' '));
         listBox->append(*prefixDialogInput);
     }
 
     void setSuffix(string suffix) {
-        suffixDialogInput->setEntryText(SimpleFunctions::removeAllBeginingSpaces(suffix));
+        suffixDialogInput->setEntryText(SimpleFunctions::removeCharRFromStart(suffix, ' '));
         listBox->append(*suffixDialogInput);
     }
 
@@ -85,6 +85,8 @@ class Dialog {
             bool state = item->getSwitchState();
             cout << state << endl;
         }
+        cout << prefixDialogInput->getEntryText() << endl;
+        cout << suffixDialogInput->getEntryText() << endl;
     }
 
  public:

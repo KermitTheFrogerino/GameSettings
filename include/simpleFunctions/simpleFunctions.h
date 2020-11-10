@@ -1,7 +1,6 @@
-#include <curl/curl.h>
 #include <gtkmm-3.0/gtkmm.h>
-#include <json-glib/json-glib.h>
 #include <iostream>
+#include <memory>
 #include <string>
 #include <vector>
 #include "../gameItem/gameItem.h"
@@ -12,22 +11,13 @@ using namespace std;
 #ifndef SIMPLEFUNCTIONS_SIMPLEFUNCTIONS_H_
 #define SIMPLEFUNCTIONS_SIMPLEFUNCTIONS_H_
 
+#define T_L(x) TYTI_L(char, x)
+
 // Adds \" to each side of the string
 #define quote(x) #x
 
 class SimpleFunctions {
  public:
-    static string removeAllBeginingSpaces(string str) {
-        while (true) {
-            if (str.starts_with(' ')) {
-                str = str.erase(0, 1);
-                continue;
-            }
-            break;
-        }
-        return str;
-    }
-
     static vector<string> stringSplitByString(string str, string token) {
         vector<string> result;
         if (str.size() <= 0) return result;
@@ -107,15 +97,6 @@ class SimpleFunctions {
         return s;
     }
 
-    static bool ifStrMatchList(string ref, vector<string> li) {
-        for (auto it : li) {
-            if (strstr(ref.c_str(), it.c_str())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     static vector<string> getDrives() {
         string steamLib = string(getenv("HOME")) + "/.local/share/Steam/steamapps";
         std::ifstream file(steamLib + "/libraryfolders.vdf");
@@ -142,11 +123,8 @@ class SimpleFunctions {
     }
 
     static string readGameOptions(string gameID) {
-        const char *optionsPath =
-          "/home/erikreider/.steam/steam/userdata/143352235/config/localconfig.vdf";
-        const char *testPath = "test.vdf";
-
-        ifstream file(optionsPath);
+        ifstream file(string(getenv("HOME")) +
+                      "/.steam/steam/userdata/143352235/config/localconfig.vdf");
         return tyti::vdf::read(file)
           .childs["Software"]
           ->childs["Valve"]
@@ -154,6 +132,35 @@ class SimpleFunctions {
           ->childs["Apps"]
           ->childs[gameID]
           ->attribs["LaunchOptions"];
+    }
+
+    static string removeRCharFromString(const string &str, char ch) {
+        string result = "";
+        for (size_t i = 0; i < str.size(); i++) {
+            if (str[i] != ch) {
+                result += str[i];
+            }
+        }
+        return result;
+    }
+
+    static string replaceCharInString(const string &str, char ch, char replace) {
+        string result = "";
+        for (size_t i = 0; i < str.size(); i++) {
+            result += str[i] == ch ? replace : str[i];
+        }
+        return result;
+    }
+
+    static string removeCharRFromStart(string str, char ch) {
+        while (true) {
+            if (str.starts_with(ch)) {
+                str = str.erase(0, 1);
+                continue;
+            }
+            break;
+        }
+        return str;
     }
 };
 #endif  // SIMPLEFUNCTIONS_SIMPLEFUNCTIONS_H_
