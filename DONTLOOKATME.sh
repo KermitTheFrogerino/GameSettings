@@ -1,6 +1,6 @@
 #!/bin/bash
 # sudo pip install PyVDF;
-printf '\E[H\E[3J'
+printf '\033[2J\033[3J\033[1;1H'
 clear
 gcc -o gameSettings.out main.cpp \
     -std=c++20 -lstdc++ \
