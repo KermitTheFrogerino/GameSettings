@@ -50,11 +50,11 @@ int main(int argc, char **argv) {
 
     mainBuilder->get_widget("window", window);
 
-    string path = "UserLocalConfigStore/Software/Valve/Steam/Apps/70/LaunchOptions";
+    string path = "UserLocalConfigStore/Software/Valve/Steam/Apps/71/LaunchOptions";
     VdfParser2 parser = VdfParser2("test.vdf");
-    auto str = parser.readFile(path);
-    cout << str << endl;
-    parser.write(path, "yeet %command%");
+    auto fileResult = parser.readFile(path);
+    // cout << fileResult.result << endl;
+    // parser.write(path, "71%command%");
 
     // buildList();
     // window->show_all();
