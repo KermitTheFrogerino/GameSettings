@@ -16,18 +16,27 @@ using namespace std;
 // Adds \" to each side of the string
 #define quote(x) #x
 
+template <typename T>
+ostream &operator<<(ostream &out, const vector<T> &v) {
+    out << "{";
+    size_t last = v.size() - 1;
+    for (size_t i = 0; i < v.size(); ++i) {
+        out << v[i];
+        if (i != last) out << ", ";
+    }
+    out << "}";
+    return out;
+}
+
 class SimpleFunctions {
  public:
     static bool workingVectorEqual(vector<string> ref, vector<string> comp) {
-        bool allEqual = true;
         if (ref.size() != comp.size()) return false;
-        int index = 0;
-        for (auto item : ref) {
-            cout << strcmp(item.c_str(), comp[index].c_str()) << endl;
-            // if (strcmp(item.c_str(), comp[index].c_str()) != 0) allEqual = false;
+        for (int index = 0; auto item : ref) {
+            if (strcmp(item.c_str(), comp[index].c_str()) != 0) return false;
             index++;
         }
-        return allEqual;
+        return true;
     }
 
     static vector<string> stringSplitByString(string str, string token) {
@@ -110,40 +119,46 @@ class SimpleFunctions {
     }
 
     static vector<string> getDrives() {
-        string steamLib = string(getenv("HOME")) + "/.local/share/Steam/steamapps";
-        std::ifstream file(steamLib + "/libraryfolders.vdf");
-        auto root = tyti::vdf::read(file);
-        vector<string> pathList = {steamLib};
-        for (int i = 1; i < root.attribs.size(); i++) {
-            string item = root.attribs[to_string(i)];
-            if (item.size() > 0) {
-                pathList.push_back(item + "/steamapps");
-                continue;
-            }
-            break;
-        }
-        return pathList;
+        // string steamLib = string(getenv("HOME")) + "/.local/share/Steam/steamapps";
+        // std::ifstream file(steamLib + "/libraryfolders.vdf");
+        // auto root = tyti::vdf::read(file);
+        // UserLocalConfigStore/Software/Valve/Steam/Apps/71/LaunchOptions
+        // vector<string> pathList = {steamLib};
+        // for (int i = 1; i < root.attribs.size(); i++) {
+        //     string item = root.attribs[to_string(i)];
+        //     if (item.size() > 0) {
+        //         pathList.push_back(item + "/steamapps");
+        //         continue;
+        //     }
+        //     break;
+        // }
+        // return pathList;
+        vector<string> vec;
+        return vec;
     }
 
     static GameItem::Game getGame(char *path) {
-        ifstream file(path);
-        auto root = tyti::vdf::read(file);
+        // ifstream file(path);
+        // auto root = tyti::vdf::read(file);
+        // GameItem::Game game;
+        // game.appID = root.attribs["appid"];
+        // game.name = root.attribs["name"];
+        // return game;
         GameItem::Game game;
-        game.appID = root.attribs["appid"];
-        game.name = root.attribs["name"];
         return game;
     }
 
     static string readGameOptions(string gameID) {
-        ifstream file(string(getenv("HOME")) +
-                      "/.steam/steam/userdata/143352235/config/localconfig.vdf");
-        return tyti::vdf::read(file)
-          .childs["Software"]
-          ->childs["Valve"]
-          ->childs["Steam"]
-          ->childs["Apps"]
-          ->childs[gameID]
-          ->attribs["LaunchOptions"];
+        return "";
+        // ifstream file(string(getenv("HOME")) +
+        //               "/.steam/steam/userdata/143352235/config/localconfig.vdf");
+        // return tyti::vdf::read(file)
+        //   .childs["Software"]
+        //   ->childs["Valve"]
+        //   ->childs["Steam"]
+        //   ->childs["Apps"]
+        //   ->childs[gameID]
+        //   ->attribs["LaunchOptions"];
     }
 
     static string removeRCharFromString(const string &str, char ch) {

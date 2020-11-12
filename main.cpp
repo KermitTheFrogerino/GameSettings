@@ -6,7 +6,7 @@
 #include "include/gameItem/gameItem.h"
 #include "include/jsonParser/jsonParser.h"
 #include "include/simpleFunctions/simpleFunctions.h"
-#include "include/vdfParser/vdfParser2.h"
+#include "include/vdfParser/vdfParser.h"
 
 Glib::RefPtr<Gtk::Application> app;
 Glib::RefPtr<Gtk::Builder> mainBuilder;
@@ -50,11 +50,11 @@ int main(int argc, char **argv) {
 
     mainBuilder->get_widget("window", window);
 
-    string path = "UserLocalConfigStore/Software/Valve/Steam/Apps/71/LaunchOptions";
-    VdfParser2 parser = VdfParser2("test.vdf");
-    auto fileResult = parser.readFile(path);
-    // cout << fileResult.result << endl;
-    // parser.write(path, "71%command%");
+    string path = "UserLocalConfigStore/Software/Valve/Steam/Apps";
+    VdfParser parser = VdfParser("test.vdf");
+    // auto fileResult = parser.readFile(path);
+    auto yeet = parser.getVectorFromPath(path);
+    // parser.write(path, "1%command%");
 
     // buildList();
     // window->show_all();

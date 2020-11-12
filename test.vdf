@@ -1,5 +1,12 @@
 "UserLocalConfigStore"
 {
+	"700"
+	{
+		"yeet"
+		{
+			"yeettttt"		"sdfhsduifudi"
+		}
+	}
 	"Software"
 	{
 		"Valve"
@@ -16,13 +23,28 @@
 						"BadgeData"		"02000000081f"
 						"LaunchOptions"		"%command%"
 					}
+					"700"
+					{
+						"yeet"
+						{
+							"yeettttt"		"6969%command%"
+						}
+					}
 					"71"
 					{
 						"LastPlayed"		"1602265623"
 						"Playtime"		"608"
 						"Playtime2wks"		"1"
 						"BadgeData"		"02000000081f"
-						"LaunchOptions"		"71%command%"
+						"LaunchOptions"		"1%command%"
+					}
+					"710"
+					{
+						"LastPlayed"		"1602265623"
+						"Playtime"		"608"
+						"Playtime2wks"		"1"
+						"BadgeData"		"02000000081f"
+						"LaunchOptions"		"710%command%"
 					}
 					"72"
 					{
@@ -30,7 +52,7 @@
 						"Playtime"		"608"
 						"Playtime2wks"		"1"
 						"BadgeData"		"02000000081f"
-						"LaunchOptions"		"72%command%"
+						"LaunchOptions"		"%command%"
 					}
 				}
 			}
