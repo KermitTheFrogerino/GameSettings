@@ -18,6 +18,18 @@ using namespace std;
 
 class SimpleFunctions {
  public:
+    static bool workingVectorEqual(vector<string> ref, vector<string> comp) {
+        bool allEqual = true;
+        if (ref.size() != comp.size()) return false;
+        int index = 0;
+        for (auto item : ref) {
+            cout << strcmp(item.c_str(), comp[index].c_str()) << endl;
+            // if (strcmp(item.c_str(), comp[index].c_str()) != 0) allEqual = false;
+            index++;
+        }
+        return allEqual;
+    }
+
     static vector<string> stringSplitByString(string str, string token) {
         vector<string> result;
         if (str.size() <= 0) return result;

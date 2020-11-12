@@ -65,18 +65,25 @@ class VdfParser2 {
             SimpleFunctions::replaceCharInString(
               SimpleFunctions::removeCharRFromStart(
                 SimpleFunctions::removeRCharFromString(line, '"'), '\t'),
-              '\t',
-              ' '),
-            '\n',
-            '\0'),
+              '\t', ' '),
+            '\n', '\0'),
           "  ");
 
-        cout << openBracketPos << "  " << currentPath.size() << endl;
-        cout << str[0] << endl;
+        // cout << openBracketPos << "  " << currentPath.size() << endl;
+        // cout << str[0] << endl;
         // std::cout << str[0] << std::endl;
         // safe_insert(currentPath, openBracketPos, str[0]);
         // if (currentPath.size() <= openBracketPos) currentPath.resize(openBracketPos);
+        if (openBracketPos >= currentPath.size()) {
+            currentPath.resize(openBracketPos + 1);
+        }
         currentPath.at(openBracketPos) = str[0];
+
+        bool val = std::equal(path.begin(), path.end(), currentPath.begin());
+        // bool val = SimpleFunctions::workingVectorEqual(path, currentPath);
+        if (val) {
+            cout << "FOUNDDDD!!!!!!!!!" << endl;
+        }
         // currentPath.insert((currentPath.begin() + openBracketPos), str[0]);
         // if (currentPath.size() > 0 && currentPath.size() > openBracketPos) {
         //     // while (currentPath.size() > openBracketPos) {
@@ -88,7 +95,7 @@ class VdfParser2 {
 
         cout << currentPath << endl;
         cout << path << endl;
-        cout << (currentPath == path) << endl;
+        cout << val << endl;
         // cout << str[0].c_str() << " - " << strcmp(str[0].c_str(), path[openBracketPos].c_str())
         //      << " - " << path[openBracketPos].c_str() << endl;
         // if (strcmp(str[0].c_str(), path[openBracketPos].c_str()) == 0) {
