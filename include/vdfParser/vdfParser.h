@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <iostream>
+#include <utility>
 #include <sstream>
 #include <string>
 #include <map>
@@ -18,10 +19,16 @@ struct FileResult {
     vector<string> formattedLine;
     bool isOpenBracket = false;
     bool isClosedBracket = false;
+    
+};
+
+struct VDFBase {
+    int tabPos;
+    vector<string> content;
 };
 
 struct VDFResult {
-    map<string, string> attributes;
+    std::pair<string, string> attributes;
     map<string, VDFResult> childs;
 };
 
@@ -32,6 +39,7 @@ class VdfParser {
     int index = 0;
     bool found = false;
     vector<string> currentPath;
+    int maxSize = 0;
 
     FileResult isCorrectValue(char *line,
                               size_t len,

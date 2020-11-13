@@ -189,5 +189,8 @@ class SimpleFunctions {
         }
         return str;
     }
+
+    template <typename S, typename T>
+    static void findInMapFromPath(map<S, T> mappy, string path) {}
 };
 #endif  // SIMPLEFUNCTIONS_SIMPLEFUNCTIONS_H_

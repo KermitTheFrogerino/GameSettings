@@ -17,42 +17,42 @@
 				{
 					"70"
 					{
-						"LastPlayed"		"1602265623"
-						"Playtime"		"608"
-						"Playtime2wks"		"1"
-						"BadgeData"		"02000000081f"
-						"LaunchOptions"		"%command%"
+						"LastPlayed"		"70-1602265623"
+						"Playtime"		"70-608"
+						"Playtime2wks"		"70-1"
+						"BadgeData"		"70-02000000081f"
+						"LaunchOptions"		"70-%command%"
 					}
 					"700"
 					{
 						"yeet"
 						{
-							"yeettttt"		"6969%command%"
+							"yeettttt"		"yeet-6969%command%"
 						}
 					}
 					"71"
 					{
-						"LastPlayed"		"1602265623"
-						"Playtime"		"608"
-						"Playtime2wks"		"1"
-						"BadgeData"		"02000000081f"
-						"LaunchOptions"		"1%command%"
+						"LastPlayed"		"71-1602265623"
+						"Playtime"		"71-608"
+						"Playtime2wks"		"71-1"
+						"BadgeData"		"71-02000000081f"
+						"LaunchOptions"		"71-%command%"
 					}
 					"710"
 					{
-						"LastPlayed"		"1602265623"
-						"Playtime"		"608"
-						"Playtime2wks"		"1"
-						"BadgeData"		"02000000081f"
-						"LaunchOptions"		"710%command%"
+						"LastPlayed"		"710-1602265623"
+						"Playtime"		"710-608"
+						"Playtime2wks"		"710-1"
+						"BadgeData"		"710-02000000081f"
+						"LaunchOptions"		"710-%command%"
 					}
 					"72"
 					{
 						"LastPlayed"		"1602265623"
-						"Playtime"		"608"
-						"Playtime2wks"		"1"
-						"BadgeData"		"02000000081f"
-						"LaunchOptions"		"%command%"
+						"Playtime"		"72-608"
+						"Playtime2wks"		"72-1"
+						"BadgeData"		"72-02000000081f"
+						"LaunchOptions"		"72-%command%"
 					}
 				}
 			}
