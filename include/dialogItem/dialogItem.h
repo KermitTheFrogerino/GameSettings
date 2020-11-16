@@ -1,6 +1,8 @@
 #include <gtkmm.h>
 #include <iostream>
 #include <string>
+#include "../gameItem/gameItem.h"
+#include "dialogItemType.h"
 
 using namespace std;
 
@@ -10,44 +12,32 @@ using namespace std;
 class DialogItem : public Gtk::ListBoxRow {
  private:
     Gtk::Box box;
-    Gtk::EventBox eventBox;
     Gtk::Label label;
     Gtk::Switch switchWidget;
+    GameItem::GameSetting gameSettings;
 
     int const margin = 8;
 
  public:
-    enum ItemType { two, multiple, input };
-
-    class DialogModel {
-     private:
-        string title;
-        ItemType itemType;
-
-     public:
-        DialogModel(string title, ItemType itemType) {
-            this->title = title;
-            this->itemType = itemType;
-        }
-
-        string getTitle() { return title; }
-
-        ItemType getItemType() { return itemType; }
-    };
-
-    explicit DialogItem(DialogItem::DialogModel dialogModel) {
+    // Switch Item
+    explicit DialogItem(GameItem::GameSetting gameSettings, bool enabled = false) {
+        this->gameSettings = gameSettings;
         Gtk::manage(this);
-        label.set_label(dialogModel.getTitle());
+
+        switchWidget.set_state(enabled);
+
+        label.set_label(gameSettings.name);
         label.set_hexpand(true);
         label.set_halign(Gtk::ALIGN_START);
-        eventBox.add(box);
+        add(box);
         box.set_margin_bottom(margin);
         box.set_margin_top(margin);
         box.set_margin_start(margin);
         box.set_margin_end(margin);
         box.add(label);
         box.add(switchWidget);
-        add(eventBox);
     }
+
+    bool getSwitchState() { return switchWidget.get_state(); }
 };
 #endif  // DIALOGITEM_DIALOGITEM_H_
