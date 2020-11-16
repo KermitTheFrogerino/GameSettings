@@ -1,6 +1,8 @@
 #include <gtkmm-3.0/gtkmm.h>
 #include <iostream>
+#include <map>
 #include <memory>
+#include <regex>
 #include <string>
 #include <vector>
 #include "../gameItem/gameItem.h"
@@ -8,12 +10,12 @@
 
 using namespace std;
 
-#ifndef SIMPLEFUNCTIONS_SIMPLEFUNCTIONS_H_
-#define SIMPLEFUNCTIONS_SIMPLEFUNCTIONS_H_
+#ifndef INCLUDE_SIMPLEFUNCTIONS_SIMPLEFUNCTIONS_H_
+#define INCLUDE_SIMPLEFUNCTIONS_SIMPLEFUNCTIONS_H_
 
 #define T_L(x) TYTI_L(char, x)
 
-// Adds \" to each side of the string
+// Adds quotes to each side of the string
 #define quote(x) #x
 
 template <typename T>
@@ -28,10 +30,26 @@ ostream &operator<<(ostream &out, const vector<T> &v) {
     return out;
 }
 
+template <typename S, typename T>
+ostream &operator<<(ostream &out, const std::map<S, T> &v) {
+    out << "{" << (v.size() > 0 ? "\n" : " ");
+    size_t last = v.size() - 1;
+    for (int index = 0; auto item : v) {
+        out << "\t";
+        out << item.first << ": " << item.second;
+        if (index != last) out << ", ";
+        out << "\n";
+        index++;
+    }
+    out << "}\n";
+    return out;
+}
+
 class SimpleFunctions {
  public:
-    static bool workingVectorEqual(vector<string> ref, vector<string> comp) {
-        if (ref.size() != comp.size()) return false;
+    template <typename S>
+    static bool vectorMatch(vector<S> ref, vector<S> comp, bool matchSize = true) {
+        if (matchSize && ref.size() != comp.size()) return false;
         for (int index = 0; auto item : ref) {
             if (strcmp(item.c_str(), comp[index].c_str()) != 0) return false;
             index++;
@@ -73,92 +91,71 @@ class SimpleFunctions {
         return str;
     }
 
-    static bool stringInList(string value, vector<string> list) {
-        for (auto item : list) {
-            if (value == item) {
-                return true;
+    static bool stringInList(string ref, vector<string> li, bool lose = false) {
+        for (string item : li) {
+            if (lose) {
+                if (strstr(ref.c_str(), item.c_str())) {
+                    return true;
+                }
+            } else {
+                if (ref == item) {
+                    return true;
+                }
             }
         }
         return false;
     }
 
-    static char *addChar(char const *first, char const *second) {
-        size_t size = sizeof(char) + strlen(first) + strlen(second);
-        char *str = reinterpret_cast<char *>(malloc(size));
-        strcpy(str, first);
-        strcat(str, second);
-        return str;
-    }
-
-    static char *surroundChar(char const *first, char const *second, char const *third) {
-        size_t size = sizeof(char) + strlen(first) + strlen(second) + strlen(third);
-        char *str = reinterpret_cast<char *>(malloc(size));
-        strcpy(str, first);
-        strcat(str, second);
-        strcat(str, third);
-        return str;
-    }
-
-    static void timeFunction(void(func)()) {
-        auto start = chrono::high_resolution_clock::now();
-        func();
-        auto stop = chrono::high_resolution_clock::now();
-        auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
-        cout << duration.count() << endl;
-    }
-
-    static char *removeSpaces(char *s) {
-        char *cpy = s;
-        char *temp = s;
-        while (*cpy) {
-            if (*cpy != ' ') *temp++ = *cpy;
-            cpy++;
+    static string getSteamUserID() {
+        string path = string(getenv("HOME")) + "/.local/share/Steam/config/loginusers.vdf";
+        auto users = VdfParser(path).getFromPath("users");
+        int steam32BitID = 0;
+        for (auto user : users) {
+            auto split = SimpleFunctions::stringSplitByChar(user.first, '/');
+            if (split[1] == "MostRecent" && user.second == "1") {
+                // Might cause error when converting a string to a 64Bit int when string
+                // isn't numbers so checking with regex if only numbers
+                if (regex_match(split[0], regex("^[0-9]*$"))) {
+                    steam32BitID = stol(split[0]) - 76561197960265728;
+                    break;
+                }
+            }
         }
-        *temp = 0;
-        return s;
+        if (steam32BitID == 0) {
+            cout << "Could not get 32bit Steam ID. Make sure that you're logged into Steam" << endl;
+            exit(1);
+        }
+        return to_string(steam32BitID);
     }
 
     static vector<string> getDrives() {
-        // string steamLib = string(getenv("HOME")) + "/.local/share/Steam/steamapps";
-        // std::ifstream file(steamLib + "/libraryfolders.vdf");
-        // auto root = tyti::vdf::read(file);
-        // UserLocalConfigStore/Software/Valve/Steam/Apps/71/LaunchOptions
-        // vector<string> pathList = {steamLib};
-        // for (int i = 1; i < root.attribs.size(); i++) {
-        //     string item = root.attribs[to_string(i)];
-        //     if (item.size() > 0) {
-        //         pathList.push_back(item + "/steamapps");
-        //         continue;
-        //     }
-        //     break;
-        // }
-        // return pathList;
-        vector<string> vec;
-        return vec;
+        string steamLib = string(getenv("HOME")) + "/.local/share/Steam/steamapps";
+        VdfParser parser = VdfParser(steamLib + "/libraryfolders.vdf");
+        map<string, string> attributes = parser.getFromPath("LibraryFolders");
+        vector<string> pathList = {steamLib};
+        for (int i = 1; i < attributes.size(); i++) {
+            string item = attributes[to_string(i)];
+            if (item.size() > 0) {
+                pathList.push_back(item + "/steamapps");
+                continue;
+            }
+            break;
+        }
+        return pathList;
     }
 
-    static GameItem::Game getGame(char *path) {
-        // ifstream file(path);
-        // auto root = tyti::vdf::read(file);
-        // GameItem::Game game;
-        // game.appID = root.attribs["appid"];
-        // game.name = root.attribs["name"];
-        // return game;
+    static GameItem::Game getGame(string path) {
+        map<string, string> gameMap = VdfParser(path).getFromPath("AppState");
         GameItem::Game game;
+        game.appID = gameMap["appid"];
+        game.name = gameMap["name"];
         return game;
     }
 
-    static string readGameOptions(string gameID) {
-        return "";
-        // ifstream file(string(getenv("HOME")) +
-        //               "/.steam/steam/userdata/143352235/config/localconfig.vdf");
-        // return tyti::vdf::read(file)
-        //   .childs["Software"]
-        //   ->childs["Valve"]
-        //   ->childs["Steam"]
-        //   ->childs["Apps"]
-        //   ->childs[gameID]
-        //   ->attribs["LaunchOptions"];
+    static string readGameOptions(string gameID, string userID) {
+        string path = "/.steam/steam/userdata/" + userID + "/config/localconfig.vdf";
+        return VdfParser(string(getenv("HOME")) + path)
+          .getFromPath("UserLocalConfigStore/Software/Valve/Steam/Apps/" + gameID)["LaunchOptions"];
     }
 
     static string removeRCharFromString(const string &str, char ch) {
@@ -173,8 +170,8 @@ class SimpleFunctions {
 
     static string replaceCharInString(const string &str, char ch, char replace) {
         string result = "";
-        for (size_t i = 0; i < str.size(); i++) {
-            result += str[i] == ch ? replace : str[i];
+        for (char character : str) {
+            result += character == ch ? replace : character;
         }
         return result;
     }
@@ -189,8 +186,5 @@ class SimpleFunctions {
         }
         return str;
     }
-
-    template <typename S, typename T>
-    static void findInMapFromPath(map<S, T> mappy, string path) {}
 };
-#endif  // SIMPLEFUNCTIONS_SIMPLEFUNCTIONS_H_
+#endif  // INCLUDE_SIMPLEFUNCTIONS_SIMPLEFUNCTIONS_H_

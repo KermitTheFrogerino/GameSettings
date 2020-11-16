@@ -1,59 +1,73 @@
 "UserLocalConfigStore"
 {
+	"First"
+	{
+		"yeeyt"		// "eiuwiuriwue"
+		// "yeeyt"		"eiuwiuriwue"
+		"yeeyt"		/* "eiuwiuriwue" */
+		/* "yeeyt" */		"eiuwiuriwue"
+		"attr"		"1%command%"
+	}
 	"700"
 	{
-		"yeet"
+		"Dir2_Test"
 		{
-			"yeettttt"		"sdfhsduifudi"
+			"attr"		"Dir2_Test-attr"
 		}
 	}
 	"Software"
 	{
 		"Valve"
 		{
+			// Comment Test
+			/* Other Comment Test */
 			"Steam"
 			{
 				"Apps"
 				{
 					"70"
 					{
-						"LastPlayed"		"70-1602265623"
-						"Playtime"		"70-608"
-						"Playtime2wks"		"70-1"
-						"BadgeData"		"70-02000000081f"
-						"LaunchOptions"		"70-%command%"
+						"LastPlayed"		"70-LastPlayed""
+						"Playtime"		"70-Playtime"
+						"Playtime2wks"		"70-Playtime2wks"
+						"BadgeData"		"70-BadgeData"
+						"LaunchOptions"		"70-LaunchOptions"
 					}
 					"700"
 					{
-						"yeet"
+						"InnerChild_Test"
 						{
-							"yeettttt"		"yeet-6969%command%"
+							"attr"		"InnerChild_Test-attr"
 						}
 					}
 					"71"
 					{
-						"LastPlayed"		"71-1602265623"
-						"Playtime"		"71-608"
-						"Playtime2wks"		"71-1"
-						"BadgeData"		"71-02000000081f"
-						"LaunchOptions"		"71-%command%"
+						"LastPlayed"		"71-LastPlayed"
+						"Playtime"		"71-Playtime"
+						"Playtime2wks"		"71-Playtime2wks"
+						"BadgeData"		"71-BadgeData"
+						"LaunchOptions"		"71-LaunchOptions"
 					}
 					"710"
 					{
-						"LastPlayed"		"710-1602265623"
-						"Playtime"		"710-608"
-						"Playtime2wks"		"710-1"
-						"BadgeData"		"710-02000000081f"
-						"LaunchOptions"		"710-%command%"
+						"LastPlayed"		"710-LastPlayed""
+						"Playtime"		"710-Playtime"
+						"Playtime2wks"		"710-Playtime2wks"
+						"BadgeData"		"710-BadgeData"
+						"LaunchOptions"		"710-LaunchOptions"
 					}
 					"72"
 					{
-						"LastPlayed"		"1602265623"
-						"Playtime"		"72-608"
-						"Playtime2wks"		"72-1"
-						"BadgeData"		"72-02000000081f"
-						"LaunchOptions"		"72-%command%"
+						"LastPlayed"		"72-LastPlayed"
+						"Playtime"		"72-Playtime"
+						"Playtime2wks"		"72-Playtime2wks"
+						"BadgeData"		"72-BadgeData"
+						"LaunchOptions"		"72-LaunchOptions"
 					}
+				}
+				"OtherDir"
+				{
+					"attr"		"OtherDir_Test-attr"
 				}
 			}
 		}

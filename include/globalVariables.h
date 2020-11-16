@@ -5,10 +5,10 @@
 
 using namespace std;
 
-#ifndef GLOBALVARIABLES_H_
-#define GLOBALVARIABLES_H_
+#ifndef INCLUDE_GLOBALVARIABLES_H_
+#define INCLUDE_GLOBALVARIABLES_H_
 
-const struct {
+struct {
     string MESA_DRIVERPath =
       "VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/radeon_icd.i686.json:/usr/share/vulkan/icd.d/"
       "radeon_icd.x86_64.json";
@@ -33,6 +33,11 @@ const struct {
       {GameItem::GameSetting("WineDebug", {{"WineDebug", "winedebug=-all"}})},
       {GameItem::GameSetting("Log", {{"Log", "PROTON_LOG=1"}})},
     };
+
+    vector<string> gameBList = {
+      "Proton",
+      "Steam",
+    };
 } GlobalVariables;
 
-#endif  // GLOBALVARIABLES_H_
+#endif  // INCLUDE_GLOBALVARIABLES_H_

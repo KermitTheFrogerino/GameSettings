@@ -2,25 +2,23 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <unordered_map>
 #include "include/dialog/dialog.h"
 #include "include/gameItem/gameItem.h"
-#include "include/jsonParser/jsonParser.h"
 #include "include/simpleFunctions/simpleFunctions.h"
 #include "include/vdfParser/vdfParser.h"
 
-Glib::RefPtr<Gtk::Application> app;
 Glib::RefPtr<Gtk::Builder> mainBuilder;
 Glib::RefPtr<Gtk::Builder> dialogBuilder;
 Gtk::Window *window;
 Gtk::ListBox *listBox;
 
-void buildList() {
+void buildList(string steamID) {
     mainBuilder->get_widget("listBox", listBox);
     vector<string> pathList = SimpleFunctions::getDrives();
     // For each steam drive dir
-    for (string item : pathList) {
-        char const *path = item.c_str();
-        DIR *folder = opendir(path);
+    for (string path : pathList) {
+        DIR *folder = opendir(path.c_str());
         if (folder == NULL) {
             puts("Unable to read directory");
             exit(1);
@@ -28,36 +26,30 @@ void buildList() {
         // Each game appmanifest file
         while (dirent *entry = readdir(folder)) {
             if (!strstr(entry->d_name, "appmanifest_")) continue;
-            GameItem::Game game =
-              SimpleFunctions::getGame(SimpleFunctions::surroundChar(path, "/", entry->d_name));
-            if (SimpleFunctions::stringInList(game.name, {"Proton", "Steam"})) continue;
+            GameItem::Game game = SimpleFunctions::getGame(path + "/" + entry->d_name);
+            if (SimpleFunctions::stringInList(game.name, GlobalVariables.gameBList, true)) continue;
             listBox->append(*new GameItem(
               game,
               window,
-              [](GdkEventButton *event, GameItem::Game game, Gtk::Window *window) -> bool {
-                  return Dialog(dialogBuilder, game, window).show();
-              }));
+              steamID,
+              [](GdkEventButton *event, GameItem::Game game, Gtk::Window *window, string steamID)
+                -> bool { return Dialog(dialogBuilder, game, window, steamID).show(); }));
         }
         closedir(folder);
     }
 }
 
 int main(int argc, char **argv) {
-    app = Gtk::Application::create(argc, argv, "org.gtkmm.example");
+    auto app = Gtk::Application::create(argc, argv, "org.gtkmm.example");
 
     mainBuilder = Gtk::Builder::create_from_file("glade/mainUI.glade");
     dialogBuilder = Gtk::Builder::create_from_file("glade/dialog.glade");
 
     mainBuilder->get_widget("window", window);
 
-    string path = "UserLocalConfigStore/Software/Valve/Steam/Apps";
-    VdfParser parser = VdfParser("test.vdf");
-    // auto fileResult = parser.readFile(path);
-    auto yeet = parser.getVectorFromPath(path);
-    // parser.write(path, "1%command%");
+    string steamID = SimpleFunctions::getSteamUserID();
 
-    // buildList();
-    // window->show_all();
-    // return app->run(*window);
-    return 0;
+    buildList(steamID);
+    window->show_all();
+    return app->run(*window);
 }

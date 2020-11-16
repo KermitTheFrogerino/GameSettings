@@ -17,11 +17,12 @@
 
 using namespace std;
 
-#ifndef DIALOG_DIALOG_H_
-#define DIALOG_DIALOG_H_
+#ifndef INCLUDE_DIALOG_DIALOG_H_
+#define INCLUDE_DIALOG_DIALOG_H_
 
 class Dialog {
  private:
+    string steamID;
     Glib::RefPtr<Gtk::Builder> dialogBuilder;
     Gtk::Dialog *dialog;
     Gtk::Window *window;
@@ -38,7 +39,7 @@ class Dialog {
         headerBar.set_title("Set Launch Options");
         headerBar.set_show_close_button();
         headerBar.show();
-        checkOptions(SimpleFunctions::readGameOptions(game.appID));
+        checkOptions(SimpleFunctions::readGameOptions(game.appID, "143352235"));
     }
 
     void checkOptions(string launchOptions) {
@@ -90,7 +91,11 @@ class Dialog {
     }
 
  public:
-    Dialog(Glib::RefPtr<Gtk::Builder> dialogBuilder, GameItem::Game game, Gtk::Window *parent) {
+    Dialog(Glib::RefPtr<Gtk::Builder> dialogBuilder,
+           GameItem::Game game,
+           Gtk::Window *parent,
+           string steamID) {
+        this->steamID = steamID;
         this->game = game;
         this->window = parent;
         dialogBuilder->get_widget("dialog", dialog);
@@ -118,4 +123,4 @@ class Dialog {
     }
 };
 
-#endif  // DIALOG_DIALOG_H_
+#endif  // INCLUDE_DIALOG_DIALOG_H_

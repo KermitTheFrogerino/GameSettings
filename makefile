@@ -13,8 +13,5 @@ main.o: main.cpp
 vdfParser.o: $(INC)vdfParser/*
 		$(CC) $(CFLAGS) -c $(INC)vdfParser/vdfParser.cpp $(FLAGS)
 
-.PHONY: clean
-		make clean
-
 clean:
-		rm -f *.o
+		rm -f *.o && rm GameSettings
