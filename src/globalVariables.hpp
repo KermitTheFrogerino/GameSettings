@@ -1,12 +1,12 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "gameItem/gameItem.h"
+#include "gameItem/gameItem.hpp"
 
 using namespace std;
 
-#ifndef INCLUDE_GLOBALVARIABLES_H_
-#define INCLUDE_GLOBALVARIABLES_H_
+#ifndef INCLUDE_GLOBALVARIABLES_HPP_
+#define INCLUDE_GLOBALVARIABLES_HPP_
 
 struct {
     string MESA_DRIVERPath =
@@ -40,4 +40,4 @@ struct {
     };
 } GlobalVariables;
 
-#endif  // INCLUDE_GLOBALVARIABLES_H_
+#endif  // INCLUDE_GLOBALVARIABLES_HPP_

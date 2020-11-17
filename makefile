@@ -1,17 +1,19 @@
-CFLAGS = -O
-FLAGS = -std=c++20 -lstdc++ `pkg-config gtkmm-3.0 --cflags --libs`
-CC = g++
-EXECUTIBLE = GameSettings
-INC = include/
+SRC_DIR := src
+OBJ_DIR := build
+CMP = g++ 
 
-GameSettings: main.o vdfParser.o
-		$(CC) $(CFLAGS) -o $(EXECUTIBLE) main.o vdfParser.o $(FLAGS)
+# Get all .cpp files in ./src dir
+CPP_FILES := $(wildcard $(SRC_DIR)/*/*.cpp $(SRC_DIR)/*.cpp)
+OBJ_FILES := $(patsubst $(SRC_DIR)/%,$(OBJ_DIR)/%,$(CPP_FILES:.cpp=.o))
 
-main.o: main.cpp
-		$(CC) $(CFLAGS) -c main.cpp $(FLAGS)
+CPPFLAGS := -O -std=c++20 -lstdc++ `pkg-config gtkmm-3.0 --cflags --libs`
 
-vdfParser.o: $(INC)vdfParser/*
-		$(CC) $(CFLAGS) -c $(INC)vdfParser/vdfParser.cpp $(FLAGS)
+GameSettings: $(OBJ_FILES)
+		$(CMP) $(CPPFLAGS) -o $(OBJ_DIR)/$@ $^
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+		mkdir -p $(dir $@)
+		$(CMP) $(CPPFLAGS) -c $< -o $@
 
 clean:
-		rm -f *.o && rm GameSettings
+		rm -r -f $(OBJ_DIR)

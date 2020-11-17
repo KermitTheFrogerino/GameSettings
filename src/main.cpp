@@ -1,12 +1,10 @@
 #include <gtkmm-3.0/gtkmm.h>
 #include <iostream>
-#include <sstream>
 #include <string>
-#include <unordered_map>
-#include "include/dialog/dialog.h"
-#include "include/gameItem/gameItem.h"
-#include "include/simpleFunctions/simpleFunctions.h"
-#include "include/vdfParser/vdfParser.h"
+#include "dialog/dialog.hpp"
+#include "gameItem/gameItem.hpp"
+#include "func/func.hpp"
+#include "vdfParser/vdfParser.hpp"
 
 Glib::RefPtr<Gtk::Builder> mainBuilder;
 Glib::RefPtr<Gtk::Builder> dialogBuilder;
@@ -15,7 +13,7 @@ Gtk::ListBox *listBox;
 
 void buildList(string steamID) {
     mainBuilder->get_widget("listBox", listBox);
-    vector<string> pathList = SimpleFunctions::getDrives();
+    vector<string> pathList = Func::getDrives();
     // For each steam drive dir
     for (string path : pathList) {
         DIR *folder = opendir(path.c_str());
@@ -26,8 +24,8 @@ void buildList(string steamID) {
         // Each game appmanifest file
         while (dirent *entry = readdir(folder)) {
             if (!strstr(entry->d_name, "appmanifest_")) continue;
-            GameItem::Game game = SimpleFunctions::getGame(path + "/" + entry->d_name);
-            if (SimpleFunctions::stringInList(game.name, GlobalVariables.gameBList, true)) continue;
+            GameItem::Game game = Func::getGame(path + "/" + entry->d_name);
+            if (Func::stringInList(game.name, GlobalVariables.gameBList, true)) continue;
             listBox->append(*new GameItem(
               game,
               window,
@@ -46,10 +44,7 @@ int main(int argc, char **argv) {
     dialogBuilder = Gtk::Builder::create_from_file("glade/dialog.glade");
 
     mainBuilder->get_widget("window", window);
-
-    string steamID = SimpleFunctions::getSteamUserID();
-
-    buildList(steamID);
+    buildList(Func::getSteamUserID());
     window->show_all();
     return app->run(*window);
 }

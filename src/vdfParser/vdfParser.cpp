@@ -1,10 +1,10 @@
-#include "vdfParser.h"
+#include "vdfParser.hpp"
 #include <iostream>
 #include <regex>
 #include <string>
 #include <utility>
 #include <vector>
-#include "../simpleFunctions/simpleFunctions.h"
+#include "../func/func.hpp"
 
 using namespace std;
 
@@ -24,11 +24,11 @@ VdfParser::FileResult VdfParser::isCorrectValue(char *line, size_t len, vector<s
         return res;
     }
 
-    string noQuotes = SimpleFunctions::removeRCharFromString(line, '"');
-    string noStartTabs = SimpleFunctions::removeCharRFromStart(noQuotes, '\t');
-    string noTabs = SimpleFunctions::replaceCharInString(noStartTabs, '\t', ' ');
-    string noNewLine = SimpleFunctions::removeRCharFromString(noTabs, '\n');
-    res.formattedLine = SimpleFunctions::stringSplitByString(noNewLine, "  ");
+    string noQuotes = Func::removeRCharFromString(line, '"');
+    string noStartTabs = Func::removeCharRFromStart(noQuotes, '\t');
+    string noTabs = Func::replaceCharInString(noStartTabs, '\t', ' ');
+    string noNewLine = Func::removeRCharFromString(noTabs, '\n');
+    res.formattedLine = Func::stringSplitByString(noNewLine, "  ");
     // Resize the vector to the size of the path vector
     if (openBracketPos + 1 < currentPath.size()) {
         while (openBracketPos + 1 < currentPath.size()) {
@@ -42,7 +42,7 @@ VdfParser::FileResult VdfParser::isCorrectValue(char *line, size_t len, vector<s
     currentPath.at(openBracketPos) = res.formattedLine[0];
     res.path = currentPath;
     if (openBracketPos + 1 < path.size() || res.formattedLine.size() < 2) return res;
-    if (SimpleFunctions::vectorMatch(path, currentPath, false)) {
+    if (Func::vectorMatch(path, currentPath, false)) {
         // Return if is comment
         std::regex reg = std::regex("(?:/\\*(?:[^*]|(?:\\*+[^*/]))*\\*+/)|(?://.*)");
         if (regex_match(res.formattedLine[0], reg)) return res;
@@ -64,7 +64,7 @@ map<string, string> VdfParser::getFromPath(string childPath) {
         printf("Error! opening file");
         exit(1);
     }
-    vector<string> path = SimpleFunctions::stringSplitByChar(childPath, '/');
+    vector<string> path = Func::stringSplitByChar(childPath, '/');
     char *line = NULL;
     size_t len = 0;
     map<string, string> vdfResult;
@@ -100,7 +100,7 @@ void VdfParser::replaceInFile(string childPath, string content) {
         printf("Error! opening file");
         exit(1);
     }
-    vector<string> path = SimpleFunctions::stringSplitByChar(childPath, '/');
+    vector<string> path = Func::stringSplitByChar(childPath, '/');
     vector<FileResult> fileResults;
     char *line = NULL;
     size_t len = 0;

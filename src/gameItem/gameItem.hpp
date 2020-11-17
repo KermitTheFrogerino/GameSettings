@@ -3,10 +3,10 @@
 #include <string>
 #include <utility>
 #include <vector>
-#include "../dialogItem/dialogItemType.h"
+#include "../dialogItem/dialogItemType.hpp"
 
-#ifndef GAMEITEM_GAMEITEM_H_
-#define GAMEITEM_GAMEITEM_H_
+#ifndef SRC_GAMEITEM_GAMEITEM_HPP_
+#define SRC_GAMEITEM_GAMEITEM_HPP_
 
 using namespace std;
 
@@ -32,15 +32,6 @@ class GameItem : public Gtk::ListBoxRow {
     GameItem(Game game,
              Gtk::Window *window,
              string steamID,
-             bool(onClick)(GdkEventButton *, Game, Gtk::Window *, string)) {
-        Gtk::manage(this);
-        label.set_label(game.name.c_str());
-        eventBox.add(box);
-        box.pack_start(label, Gtk::PACK_START, 5);
-        eventBox.signal_button_press_event().connect(
-          sigc::bind<GameItem::Game, Gtk::Window *, string>(
-            sigc::ptr_fun(onClick), game, window, steamID));
-        add(eventBox);
-    }
+             bool(onClick)(GdkEventButton *, Game, Gtk::Window *, string));
 };
-#endif  // GAMEITEM_GAMEITEM_H_
+#endif  // SRC_GAMEITEM_GAMEITEM_HPP_

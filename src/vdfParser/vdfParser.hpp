@@ -2,8 +2,8 @@
 #include <string>
 #include <vector>
 
-#ifndef INCLUDE_VDFPARSER_VDFPARSER_H_
-#define INCLUDE_VDFPARSER_VDFPARSER_H_
+#ifndef SRC_VDFPARSER_VDFPARSER_HPP_
+#define SRC_VDFPARSER_VDFPARSER_HPP_
 
 using namespace std;
 
@@ -29,4 +29,4 @@ class VdfParser {
 
     void replaceInFile(string childPath, string content);
 };
-#endif  // INCLUDE_VDFPARSER_VDFPARSER_H_
+#endif  // SRC_VDFPARSER_VDFPARSER_HPP_
