@@ -6,7 +6,7 @@
 #include "../dialogItem/dialogItem.hpp"
 #include "../dialogItem/dialogItemType.hpp"
 #include "../gameItem/gameItem.hpp"
-#include "../globalVariables.hpp"
+#include "../globalVariables/globalVariables.hpp"
 #include "../func/func.hpp"
 
 using namespace std;

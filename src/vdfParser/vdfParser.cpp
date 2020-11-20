@@ -24,11 +24,11 @@ VdfParser::FileResult VdfParser::isCorrectValue(char *line, size_t len, vector<s
         return res;
     }
 
-    string noQuotes = Func::removeRCharFromString(line, '"');
+    string noQuotes = Func::removeCharRFromString(line, '"');
     string noStartTabs = Func::removeCharRFromStart(noQuotes, '\t');
     string noTabs = Func::replaceCharInString(noStartTabs, '\t', ' ');
-    string noNewLine = Func::removeRCharFromString(noTabs, '\n');
-    res.formattedLine = Func::stringSplitByString(noNewLine, "  ");
+    string noNewLine = Func::removeCharRFromString(noTabs, '\n');
+    res.formattedLine = Func::split(noNewLine, "  ");
     // Resize the vector to the size of the path vector
     if (openBracketPos + 1 < currentPath.size()) {
         while (openBracketPos + 1 < currentPath.size()) {
@@ -64,7 +64,7 @@ map<string, string> VdfParser::getFromPath(string childPath) {
         printf("Error! opening file");
         exit(1);
     }
-    vector<string> path = Func::stringSplitByChar(childPath, '/');
+    vector<string> path = Func::split(childPath, '/');
     char *line = NULL;
     size_t len = 0;
     map<string, string> vdfResult;
@@ -100,7 +100,7 @@ void VdfParser::replaceInFile(string childPath, string content) {
         printf("Error! opening file");
         exit(1);
     }
-    vector<string> path = Func::stringSplitByChar(childPath, '/');
+    vector<string> path = Func::split(childPath, '/');
     vector<FileResult> fileResults;
     char *line = NULL;
     size_t len = 0;

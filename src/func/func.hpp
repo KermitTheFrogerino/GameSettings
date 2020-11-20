@@ -17,11 +17,9 @@ class Func {
  public:
     static bool vectorMatch(vector<string> ref, vector<string> comp, bool matchSize = true);
 
-    static vector<string> stringSplitByString(string str, string token);
+    static vector<string> split(string str, string token);
 
-    static vector<string> stringSplitByChar(string split, char splitter);
-
-    static const string *charListToString(char const *list);
+    static vector<string> split(string split, char splitter);
 
     static bool stringInList(string ref, vector<string> li, bool lose = false);
 
@@ -33,7 +31,7 @@ class Func {
 
     static string readGameOptions(string gameID, string userID);
 
-    static string removeRCharFromString(const string &str, char ch);
+    static string removeCharRFromString(const string &str, char ch);
 
     static string replaceCharInString(const string &str, char ch, char replace);
 

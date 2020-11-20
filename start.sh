@@ -1,4 +1,3 @@
 #!/usr/bin/env bash
 clear
-make
-./build/GameSettings
+make --file makefile

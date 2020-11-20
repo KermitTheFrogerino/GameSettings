@@ -13,7 +13,7 @@
 #include "../dialogItem/dialogItem.hpp"
 #include "../dialogItem/dialogItemType.hpp"
 #include "../gameItem/gameItem.hpp"
-#include "../globalVariables.hpp"
+#include "../globalVariables/globalVariables.hpp"
 #include "../func/func.hpp"
 
 using namespace std;
@@ -28,12 +28,12 @@ void Dialog::build() {
 }
 
 void Dialog::checkOptions(string launchOptions) {
-    auto split = Func::stringSplitByString(launchOptions, "%command%");
+    auto split = Func::split(launchOptions, "%command%");
     vector<string> prefix =
-      Func::stringSplitByChar(split.size() >= 2 ? split[0] : "", ' ');
+      Func::split(split.size() >= 2 ? split[0] : "", ' ');
 
     vector<string> validSettings;
-    for (GameItem::GameSetting setting : GlobalVariables.itemsList) {
+    for (GameItem::GameSetting setting : GlobalVariables::itemsList) {
         DialogItem *dialogItem = NULL;
         if (find(prefix.begin(), prefix.end(), setting.settings[0].second) != prefix.end()) {
             validSettings.push_back(setting.settings[0].second);

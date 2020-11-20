@@ -5,6 +5,7 @@
 #include "gameItem/gameItem.hpp"
 #include "func/func.hpp"
 #include "vdfParser/vdfParser.hpp"
+#include "globalVariables/globalVariables.hpp"
 
 Glib::RefPtr<Gtk::Builder> mainBuilder;
 Glib::RefPtr<Gtk::Builder> dialogBuilder;
@@ -25,7 +26,7 @@ void buildList(string steamID) {
         while (dirent *entry = readdir(folder)) {
             if (!strstr(entry->d_name, "appmanifest_")) continue;
             GameItem::Game game = Func::getGame(path + "/" + entry->d_name);
-            if (Func::stringInList(game.name, GlobalVariables.gameBList, true)) continue;
+            if (Func::stringInList(game.name, GlobalVariables::gameBList, true)) continue;
             listBox->append(*new GameItem(
               game,
               window,

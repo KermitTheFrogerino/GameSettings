@@ -10,6 +10,8 @@ CPPFLAGS := -O -std=c++20 -lstdc++ `pkg-config gtkmm-3.0 --cflags --libs`
 
 GameSettings: $(OBJ_FILES)
 		$(CMP) $(CPPFLAGS) -o $(OBJ_DIR)/$@ $^
+		@echo
+		./build/GameSettings
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 		mkdir -p $(dir $@)

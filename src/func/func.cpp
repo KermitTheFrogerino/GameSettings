@@ -50,24 +50,24 @@ bool Func::vectorMatch(vector<string> ref, vector<string> comp, bool matchSize) 
     return true;
 }
 
-vector<string> Func::stringSplitByString(string str, string token) {
-    vector<string> result;
-    if (str.size() <= 0) return result;
+vector<string> Func::split(string str, string splitter) {
+    vector<string> splitVector;
+    if (str.size() <= 0) return splitVector;
     while (str.size()) {
-        int index = str.find(token);
+        int index = str.find(splitter);
         if (index != string::npos) {
-            result.push_back(str.substr(0, index));
-            str = str.substr(index + token.size());
-            if (str.size() == 0) result.push_back(str);
+            splitVector.push_back(str.substr(0, index));
+            str = str.substr(index + splitter.size());
+            if (str.size() == 0) splitVector.push_back(str);
         } else {
-            result.push_back(str);
+            splitVector.push_back(str);
             str = "";
         }
     }
-    return result;
+    return splitVector;
 }
 
-vector<string> Func::stringSplitByChar(string split, char splitter) {
+vector<string> Func::split(string split, char splitter) {
     vector<string> splitVector;
     string segment;
     std::istringstream streamString(split);
@@ -76,14 +76,15 @@ vector<string> Func::stringSplitByChar(string split, char splitter) {
     }
     return splitVector;
 }
-const string *Func::charListToString(char const *list) {
-    // https://stackoverflow.com/a/4643721/9376723
-    string *str;
-    str = new string;
-    *str = list;
-    return str;
-}
 
+/**
+ * @brief Checks if string is found in vector
+ * 
+ * @param ref the string to find
+ * @param li the list of strings to look through
+ * @param lose if the string should match the strings characters, ex. Game == GameSettings = true
+ * @return bool 
+ */
 bool Func::stringInList(string ref, vector<string> li, bool lose) {
     for (string item : li) {
         if (lose) {
@@ -91,7 +92,7 @@ bool Func::stringInList(string ref, vector<string> li, bool lose) {
                 return true;
             }
         } else {
-            if (ref == item) {
+            if (strcmp(ref.c_str(), item.c_str()) == 0) {
                 return true;
             }
         }
@@ -104,7 +105,7 @@ string Func::getSteamUserID() {
     auto users = VdfParser(path).getFromPath("users");
     int steam32BitID = 0;
     for (auto user : users) {
-        auto split = Func::stringSplitByChar(user.first, '/');
+        auto split = Func::split(user.first, '/');
         if (split[1] == "MostRecent" && user.second == "1") {
             // Might cause error when converting a string to a 64Bit int when string
             // isn't numbers so checking with regex if only numbers
@@ -151,7 +152,7 @@ string Func::readGameOptions(string gameID, string userID) {
       .getFromPath("UserLocalConfigStore/Software/Valve/Steam/Apps/" + gameID)["LaunchOptions"];
 }
 
-string Func::removeRCharFromString(const string &str, char ch) {
+string Func::removeCharRFromString(const string &str, char ch) {
     string result = "";
     for (size_t i = 0; i < str.size(); i++) {
         if (str[i] != ch) {
